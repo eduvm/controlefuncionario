@@ -21,7 +21,7 @@
             <RowDefinition Height="0" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <!--Linha 1-->
         <Grid Grid.Row="0"></Grid>
         <!--Linha 1-->
@@ -120,17 +120,17 @@
                     <!-- LINHA 1-->
                     <Grid Grid.Row="0" VerticalAlignment="Top" Margin="5">
                         <TextBlock Text="ID:" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Margin="0,0,120,0"></TextBlock>
-                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="12" Width="111" Margin="19,0,0,0"/>
+                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Width="111" Margin="19,0,0,0" Text="{Binding SelectedItem.id, ElementName=dgDestino}"/>
                         <TextBlock Text="LOCAL:" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Margin="144,3,0,3"/>
-                        <TextBox VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="12" Margin="187,0,0,0"/>
+                        <TextBox VerticalAlignment="Center" FontSize="12" Margin="187,0,0,0" Text="{Binding SelectedItem.c_nome, ElementName=dgDestino}"/>
                     </Grid>
                     <!-- LINHA 1-->
 
                     <!-- LINHA 2-->
-                    <DataGrid x:Name="dgDestino" Margin="5" Grid.Row="1" FontSize="12">
+                    <DataGrid x:Name="dgDestino" Margin="5" Grid.Row="1" FontSize="12" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Width="24" />
-                            <DataGridTextColumn Header="LOCAL" Width="*" />
+                            <DataGridTextColumn Header="ID" Width="24" Binding="{Binding id}" />
+                            <DataGridTextColumn Header="LOCAL" Width="*" Binding="{Binding c_nome}" />
                         </DataGrid.Columns>
                     </DataGrid>
                     <!-- LINHA 2-->
