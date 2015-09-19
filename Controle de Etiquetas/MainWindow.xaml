@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:Controle_de_Etiquetas"
     xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Controle_de_Etiquetas.MainWindow"
     mc:Ignorable="d"
-    Title="MainWindow" Height="582.5" Width="933" WindowStartupLocation="CenterScreen">
+    Title="MainWindow" Height="582.5" Width="933" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -65,15 +65,15 @@
 
                             <Grid Margin="5">
                                 <TextBlock Text="ID:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,3,0,0"/>
-                                <TextBox x:Name="tbId" Margin="19,0,0,0" Text="TESTE" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="82"/>
+                                <TextBox x:Name="tbId" Margin="19,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="82" Text="{Binding SelectedItem.id, ElementName=dgControle}"/>
                                 <TextBlock Text="DATA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="196,3,0,0"/>
-                                <TextBox x:Name="tbData" Margin="234,0,0,0" Text="TESTE" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="119"/>
+                                <TextBox x:Name="tbData" Margin="234,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="119" Text="{Binding SelectedItem.d_data, ElementName=dgControle, StringFormat=\{0:dd/MM/yyyy\}}"/>
                                 <TextBlock Text="HORA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="435,3,0,0"/>
-                                <TextBox x:Name="tbHora" Margin="473,0,0,0" Text="TESTE" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="108"/>
+                                <TextBox x:Name="tbHora" Margin="473,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="108" Text="{Binding SelectedItem.t_hora, ElementName=dgControle}"/>
                                 <TextBlock Text="FUNCIONÁRIO:" FontSize="12" Margin="0,30,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                <TextBox x:Name="tbFuncionario" Margin="86,27,0,0" Text="TESTE" FontSize="12" VerticalAlignment="Top"/>
+                                <TextBox x:Name="tbFuncionario" Margin="86,27,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.n_id_funcionario, ElementName=dgControle}"/>
                                 <TextBlock Text="DESTINO:" FontSize="12" Margin="0,57,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                <TextBox x:Name="tbDestino" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="86,54,0,0" Text="TESTE" FontSize="12" VerticalAlignment="Top"/>
+                                <TextBox x:Name="tbDestino" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="86,54,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.n_id_destino, ElementName=dgControle}"/>
 
                             </Grid>
 
@@ -93,13 +93,13 @@
                             <TextBox HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="12" Width="115"/>
                         </Grid>
 
-                        <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1">
+                        <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Width="24" />
-                                <DataGridTextColumn Header="FUNCIONARIO" Width="250" />
-                                <DataGridTextColumn Header="DATA" Width="80" />
-                                <DataGridTextColumn Header="HORA" Width="60" />
-                                <DataGridTextColumn Header="DESTINO" Width="*" />
+                                <DataGridTextColumn Header="ID" Width="24" Binding="{Binding id}"/>
+                                <DataGridTextColumn Header="FUNCIONARIO" Width="250" Binding="{Binding n_id_funcionario}"/>
+                                <DataGridTextColumn Header="DATA" Width="80" Binding="{Binding d_data}"/>
+                                <DataGridTextColumn Header="HORA" Width="60" Binding="{Binding t_hora}"/>
+                                <DataGridTextColumn Header="DESTINO" Width="*" Binding="{Binding n_id_destino}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
