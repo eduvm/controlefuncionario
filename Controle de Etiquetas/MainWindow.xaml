@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:Controle_de_Etiquetas"
     xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Controle_de_Etiquetas.MainWindow"
     mc:Ignorable="d"
-    Title="MainWindow" Height="582.5" Width="933">
+    Title="MainWindow" Height="582.5" Width="933" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -36,7 +36,7 @@
                 </Style>
             </TabControl.Resources>
 
-            <TabItem Header="CONTROLE" Height="120" FontSize="24" Style="{DynamicResource Teste}">
+            <TabItem Header="CONTROLE" Height="120" FontSize="24" Width="185">
                 <Grid Margin="5">
 
                     <!--Definições de linhas-->
@@ -109,7 +109,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="DESTINOS" Height="120" FontSize="24">
+            <TabItem Header="DESTINOS" Height="120" FontSize="24" Width="185">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -151,7 +151,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="FUNCIONÁRIOS" Height="120" FontSize="24">
+            <TabItem Header="FUNCIONÁRIOS" Height="120" FontSize="24" Width="185">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -193,7 +193,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="GERA ETIQUETA" Height="120" FontSize="24" />
+            <TabItem Header="GERA ETIQUETA" Height="120" FontSize="24" Width="185"/>
         </TabControl>
         <!--Linha 2-->
     </Grid>
