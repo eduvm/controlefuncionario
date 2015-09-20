@@ -262,7 +262,17 @@ namespace Controle_de_Etiquetas {
 
             // Seta valor do controle para parar a thread
             NeedStop = true;
+        }
 
+        private void IncluirDestino() {
+            // Cria nova instância da janela de Cadastro de Destinos
+            var CadWin = new CadDestino();
+
+            // Chama (mostra na tela) a janela de Cadastro de Destinos
+            CadWin.ShowDialog();
+
+            // Chama método de carregar os destinos
+            CarregaDestinos();
         }
 
         #endregion Métodos
