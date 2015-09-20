@@ -70,11 +70,12 @@ namespace Controle_de_Etiquetas {
             ExcluirDestino();
         }
 
-        
+        private void btnAlterarDestino_Click(object sender, RoutedEventArgs e) {
+            // Chama rotina de alteração
+            AlterarDestino();
+        }
 
         #endregion Botões
-
-        
 
         #region Variaveis
 
@@ -267,7 +268,7 @@ namespace Controle_de_Etiquetas {
 
         private void IncluirDestino() {
             // Cria nova instância da janela de Cadastro de Destinos
-            var CadWin = new CadDestino();
+            var CadWin = new CadDestino("incluir", "");
 
             // Chama (mostra na tela) a janela de Cadastro de Destinos
             CadWin.ShowDialog();
@@ -313,6 +314,32 @@ namespace Controle_de_Etiquetas {
                     // Informo que ocorreu erro
                     MessageBox.Show("Ocorreu um erro ao tentar excluir o destino");
                 }
+            }
+        }
+
+        private void AlterarDestino() {
+            // Verifico se existe registro selecionado
+            if (dgDestino.SelectedItem == null) {
+                // Informo que deve selecionar um registro
+                MessageBox.Show("Você deve selecionar um registro para alterá-lo");
+            }
+
+            // Se existe registro selecionado
+            else {
+                // Pega id do registro selecionado
+                var rowview = dgDestino.SelectedItem as DataRowView;
+
+                // Defino valor da coluna id
+                var strId = rowview.Row["id"].ToString();
+
+                // Cria nova instância da janela de Cadastro de Destinos
+                var CadWin = new CadDestino("alterar", strId);
+
+                // Chama (mostra na tela) a janela de Cadastro de Destinos
+                CadWin.ShowDialog();
+
+                // Chama método de carregar os destinos
+                CarregaDestinos();
             }
         }
 
