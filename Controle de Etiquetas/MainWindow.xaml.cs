@@ -1,56 +1,38 @@
-﻿using System;
+﻿#region Header
+
+// Criado por eduvm
+// Data: 19/09/2015
+// Solução: Controle de Etiquetas
+// Projeto: Controle de Etiquetas
+// Arquivo: MainWindow.xaml.cs
+// =========================================
+// Última alteração: 20/09/2015
+
+#endregion
+
+#region Usings
+
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using Controle_de_Etiquetas.Helpers;
 
+#endregion
+
 namespace Controle_de_Etiquetas {
+
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-
-
-        #region Variaveis
-
-        // Defino objeto Thread
-        private Thread MinhaThread;
-
-        // Define porta
-        private int Porta = 5000;
-
-        // Define IP
-        private IPAddress Server = IPAddress.Parse("192.168.25.108");
-
-        // Defino objeto TcpListene
-        private TcpListener tcpServidor;
-
-        // Defino variável de controle da Thread
-        public bool NeedStop;
-
-        #endregion Variaveis
-
-
-
         #region Construtores
 
         public MainWindow() {
-
             // Inicializa os componentes da janela
             InitializeComponent();
 
@@ -71,78 +53,98 @@ namespace Controle_de_Etiquetas {
 
             // Inicia a Thread
             MinhaThread.Start();
-
         }
 
-#endregion Construtores
+        #endregion Construtores
+
+        #region Botões
+
+        private void btnCadDestino_Click(object sender, RoutedEventArgs e) {
+            // Chama método que para fazer inclusão de destinos
+            IncluirDestino();
+        }
+
+        #endregion Botões
+
+        #region Variaveis
+
+        // Defino objeto Thread
+        private Thread MinhaThread;
+
+        // Define porta
+        private int Porta = 5000;
+
+        // Define IP
+        private IPAddress Server = IPAddress.Parse("192.168.25.108");
+
+        // Defino objeto TcpListene
+        private TcpListener tcpServidor;
+
+        // Defino variável de controle da Thread
+        public bool NeedStop;
+
+        #endregion Variaveis
 
         #region Métodos
 
         /// <summary>
-        /// Método responsável por carregar os funcionários cadastrados no banco de dados
+        ///     Método responsável por carregar os funcionários cadastrados no banco de dados
         /// </summary>
         private void CarregaFuncionarios() {
-
             // Limpa registros do dataGrid
             dgFuncionarios.ItemsSource = null;
-            
+
             // Cria objeto de acesso ao banco de dados
-            DatabaseHelper objCarregaFuncionario  = new DatabaseHelper();
+            var objCarregaFuncionario = new DatabaseHelper();
 
             // Comando SQL
             var SQL = "SELECT id, c_funcionario FROM dados.funcionario WHERE b_deletado = false ORDER BY id";
 
             // Pega DataTable com resultado do SQL
-            DataTable result = objCarregaFuncionario.GetDataTable(SQL);
+            var result = objCarregaFuncionario.GetDataTable(SQL);
 
             // Seta item source do DataGrid
             dgFuncionarios.ItemsSource = result.DefaultView;
-
         }
 
         /// <summary>
-        /// Método responsável por carregar os funcionários cadastrados no banco de dados
+        ///     Método responsável por carregar os funcionários cadastrados no banco de dados
         /// </summary>
         private void CarregaDestinos() {
-
             // Limpa registros do dataGrid
             dgDestino.ItemsSource = null;
 
             // Cria objeto de acesso ao banco de dados
-            DatabaseHelper objCarregaDestino = new DatabaseHelper();
+            var objCarregaDestino = new DatabaseHelper();
 
             // Comando SQL
             var SQL = "SELECT id, c_nome FROM dados.destino WHERE b_deletado = false ORDER BY id";
 
             // Pega DataTable com resultado do SQL
-            DataTable result = objCarregaDestino.GetDataTable(SQL);
+            var result = objCarregaDestino.GetDataTable(SQL);
 
             // Seta item source do DataGrid
             dgDestino.ItemsSource = result.DefaultView;
-
         }
 
         private void CarregaControle() {
-
             // Limpa registros do dataGrid
             dgControle.ItemsSource = null;
 
             // Cria objeto de acesso ao banco de dados
-            DatabaseHelper objCarregaControle = new DatabaseHelper();
+            var objCarregaControle = new DatabaseHelper();
 
             // Comando SQL
             var SQL = "SELECT id, n_id_funcionario, d_data, t_hora, n_id_destino  FROM dados.entradas WHERE b_deletado = false ORDER BY id";
 
             // Pega DataTable com resultado do SQL
-            DataTable result = objCarregaControle.GetDataTable(SQL);
+            var result = objCarregaControle.GetDataTable(SQL);
 
             // Seta item source do DataGrid
             dgControle.ItemsSource = result.DefaultView;
-
         }
 
         private void EscutarConexao() {
-
             // Seta controle da Thread como false
             NeedStop = false;
 
@@ -161,16 +163,13 @@ namespace Controle_de_Etiquetas {
 
                 // Faço laço para ficar verificando mensagem
                 while (true) {
-
                     // Verifico se deve parar o while
                     if (NeedStop) {
-
                         // Try to stop Thread
                         MinhaThread.Abort();
 
                         // Get out off the while
                         break;
-
                     }
 
                     // Perform a blocking call to accept requests.
@@ -188,15 +187,14 @@ namespace Controle_de_Etiquetas {
 
                     // Faz loop para receber o texto da mensagem enviado pelo cliente.
                     while ((i = SocketStream.Read(bytes, 0, bytes.Length)) != 0) {
-
                         // Traduz os bytes para uma string
                         Mensagem = Encoding.ASCII.GetString(bytes, 0, i);
 
                         // Cria objeto de acesso ao banco de dados
-                        DatabaseHelper objControle = new DatabaseHelper();
+                        var objControle = new DatabaseHelper();
 
                         // Cria dicionário com chave/valor a ser inserido no banco de dados
-                        Dictionary<string, string> dctDados = new Dictionary<string, string>();
+                        var dctDados = new Dictionary<string, string>();
 
                         // Pega data do dia
                         var dData = DateTime.Now.ToString("dd/MM/yyyy");
@@ -205,34 +203,28 @@ namespace Controle_de_Etiquetas {
                         var dHora = DateTime.Now.ToString("hh:mm:ss");
 
                         // TODO - Pegar na base de dados o nome do funcionario atraves do codigo de barras recebido
-                        dctDados.Add("n_id_funcionario", Mensagem.Substring(0,3));
+                        dctDados.Add("n_id_funcionario", Mensagem.Substring(0, 3));
 
                         // TODO - Pegar na base de dados o nome do destino através do código de barras recebido
                         dctDados.Add("n_id_destino", Mensagem.Substring(3, 5));
 
                         // Adiciono a data no Dicionario de dados
-                        dctDados.Add("d_data",dData);
+                        dctDados.Add("d_data", dData);
 
                         // Adiciono a hora no Dicionario de dados
                         dctDados.Add("t_hora", dHora);
 
                         // Insere os dados no banco
                         if (objControle.Insert("dados.entradas", dctDados)) {
-
                             // Chama o método de carregametno de dados através do Invoke porque está rodando em uma Thread diferente
                             Dispatcher.Invoke(() => {
-
                                 // Chama método que atualiza o grid de controle
                                 CarregaControle();
-
                             });
-
                         }
                         else {
-
                             // Informa que ocorreu erro ao tentar adicionar o controle no banco de dados
                             MessageBox.Show("Ocorreu um erro ao tentar incluir o controle no banco de dados\nPor favor, informe ao seu administrador");
-                            
                         }
 
                         // Define mensagem de resposta transformando de string para bytes
@@ -247,7 +239,7 @@ namespace Controle_de_Etiquetas {
                 }
             }
 
-            // Em caso de erro , apresenta a mensagem na tela
+                // Em caso de erro , apresenta a mensagem na tela
             catch (SocketException e) {
                 MessageBox.Show("Ocorreu um erro\n" + e);
             }
@@ -258,8 +250,7 @@ namespace Controle_de_Etiquetas {
             }
         }
 
-        private void Window_Closed(object sender, System.EventArgs e) {
-
+        private void Window_Closed(object sender, EventArgs e) {
             // Seta valor do controle para parar a thread
             NeedStop = true;
         }
@@ -276,6 +267,6 @@ namespace Controle_de_Etiquetas {
         }
 
         #endregion Métodos
-
     }
+
 }
