@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -64,7 +65,16 @@ namespace Controle_de_Etiquetas {
             IncluirDestino();
         }
 
+        private void btnExcluirDestino_Click(object sender, RoutedEventArgs e) {
+            // Chama método que exlcuir o destino
+            ExcluirDestino();
+        }
+
+        
+
         #endregion Botões
+
+        
 
         #region Variaveis
 
@@ -264,6 +274,46 @@ namespace Controle_de_Etiquetas {
 
             // Chama método de carregar os destinos
             CarregaDestinos();
+        }
+
+        private void ExcluirDestino() {
+            // Verifica se existe registro selecionado
+            if (dgDestino.SelectedItem == null) {
+                // Apresenta mensagem de erro
+                MessageBox.Show("Você precisa escolher um destino para excluí-lo");
+            }
+
+            // Se existir registro selecionado
+            else {
+                // Pega id do registro selecionado
+                var rowview = dgDestino.SelectedItem as DataRowView;
+
+                // Defino valor da coluna id
+                var strId = rowview.Row["id"].ToString();
+
+                // Cria objeto de acesso ao banco de dados
+                var objDB = new DatabaseHelper();
+
+                // Crio dicionário com chave e valor a ser alterado no banco de dados
+                var dctDados = new Dictionary<string, string>();
+
+                // Adiciono campo e valor no dicionario
+                dctDados.Add("b_deletado", "true");
+
+                // Chama método que faz alteração no banco de dados
+                if (objDB.Update("dados.destino", dctDados, "id = " + strId)) {
+                    // Informa que o registro foi alterado com sucesso
+                    MessageBox.Show("O Destino foi deletado");
+
+                    // Chama método que atualiza o grid de destinos
+                    CarregaDestinos();
+                }
+
+                else {
+                    // Informo que ocorreu erro
+                    MessageBox.Show("Ocorreu um erro ao tentar excluir o destino");
+                }
+            }
         }
 
         #endregion Métodos
