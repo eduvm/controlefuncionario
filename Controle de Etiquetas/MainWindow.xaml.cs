@@ -75,6 +75,21 @@ namespace Controle_de_Etiquetas {
             AlterarDestino();
         }
 
+        private void bntIncluirFunc_Click(object sender, RoutedEventArgs e) {
+            // Chama método para fazer a inclusão de funcionário
+            IncluirFuncionario();
+        }
+
+        private void btnExcluirFunc_Click(object sender, RoutedEventArgs e) {
+            // Chama método para excluir funcionário
+            ExcluirFuncionario();
+        }
+
+        private void btnAlterarFunc_Click(object sender, RoutedEventArgs e) {
+            // Chama método para alterar funcionário
+            AlterarFuncionario();
+        }
+
         #endregion Botões
 
         #region Variaveis
@@ -340,6 +355,83 @@ namespace Controle_de_Etiquetas {
 
                 // Chama método de carregar os destinos
                 CarregaDestinos();
+            }
+        }
+
+        private void IncluirFuncionario() {
+            // Cria nova instância da janela de Cadastro de Destinos
+            var CadWin = new CadFuncionario("incluir", "");
+
+            // Chama (mostra na tela) a janela de Cadastro de Destinos
+            CadWin.ShowDialog();
+
+            // Chama método de carregar os destinos
+            CarregaFuncionarios();
+        }
+
+        private void ExcluirFuncionario() {
+            // Verifica se existe registro selecionado
+            if (dgFuncionarios.SelectedItem == null) {
+                // Apresenta mensagem de erro
+                MessageBox.Show("Você precisa escolher um funcionário para excluí-lo");
+            }
+
+            // Se existir registro selecionado
+            else {
+                // Pega id do registro selecionado
+                var rowview = dgFuncionarios.SelectedItem as DataRowView;
+
+                // Defino valor da coluna id
+                var strId = rowview.Row["id"].ToString();
+
+                // Cria objeto de acesso ao banco de dados
+                var objDB = new DatabaseHelper();
+
+                // Crio dicionário com chave e valor a ser alterado no banco de dados
+                var dctDados = new Dictionary<string, string>();
+
+                // Adiciono campo e valor no dicionario
+                dctDados.Add("b_deletado", "true");
+
+                // Chama método que faz alteração no banco de dados
+                if (objDB.Update("dados.funcionario", dctDados, "id = " + strId)) {
+                    // Informa que o registro foi alterado com sucesso
+                    MessageBox.Show("O Funcionário foi deletado");
+
+                    // Chama método que atualiza o grid de destinos
+                    CarregaFuncionarios();
+                }
+
+                else {
+                    // Informo que ocorreu erro
+                    MessageBox.Show("Ocorreu um erro ao tentar excluir o funcionário");
+                }
+            }
+        }
+
+        private void AlterarFuncionario() {
+            // Verifico se existe registro selecionado
+            if (dgFuncionarios.SelectedItem == null) {
+                // Informo que deve selecionar um registro
+                MessageBox.Show("Você deve selecionar um funcionário para alterá-lo");
+            }
+
+            // Se existe registro selecionado
+            else {
+                // Pega id do registro selecionado
+                var rowview = dgFuncionarios.SelectedItem as DataRowView;
+
+                // Defino valor da coluna id
+                var strId = rowview.Row["id"].ToString();
+
+                // Cria nova instância da janela de Cadastro de Destinos
+                var CadWin = new CadFuncionario("alterar", strId);
+
+                // Chama (mostra na tela) a janela de Cadastro de Destinos
+                CadWin.ShowDialog();
+
+                // Chama método de carregar os destinos
+                CarregaFuncionarios();
             }
         }
 
