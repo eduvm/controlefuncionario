@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Host" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.25.164</Value>
+      <Value Profile="(Default)">10.14.1.100</Value>
     </Setting>
     <Setting Name="Port" Type="System.String" Scope="User">
       <Value Profile="(Default)">5432</Value>
@@ -12,10 +12,10 @@
       <Value Profile="(Default)">postgres</Value>
     </Setting>
     <Setting Name="Password" Type="System.String" Scope="User">
-      <Value Profile="(Default)">edu</Value>
+      <Value Profile="(Default)">postgres</Value>
     </Setting>
     <Setting Name="Database" Type="System.String" Scope="User">
-      <Value Profile="(Default)">controle_etiquetas</Value>
+      <Value Profile="(Default)">etiquetas</Value>
     </Setting>
   </Settings>
 </SettingsFile>
