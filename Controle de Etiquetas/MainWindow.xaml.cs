@@ -127,7 +127,7 @@ namespace Controle_de_Etiquetas {
             var SQL = String.Format("SELECT id FROM dados.funcionario WHERE c_funcionario = '{0}'", cbFunc.Text);
 
             // Executo SQL salvando resultado na variável
-            CodFunc = objDB.ExecuteScalar(SQL);
+            CodFunc = objDB.ExecuteScalar(SQL).PadLeft(4,'0');
 
             // Faço junção dos textos
             var CodigoBarras = CodFunc + CodDest;
@@ -150,7 +150,7 @@ namespace Controle_de_Etiquetas {
             var SQL = String.Format("SELECT id FROM dados.destino WHERE c_nome = '{0}'", cbDestino.Text);
 
             // Executo SQL salvando resultado na variável
-            CodDest = objDB.ExecuteScalar(SQL);
+            CodDest = objDB.ExecuteScalar(SQL).PadLeft(5, '0');
 
             // Faço junção dos textos
             var CodigoBarras = CodFunc + CodDest;
