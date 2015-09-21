@@ -192,7 +192,58 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="GERA ETIQUETA" Height="120" FontSize="24" Width="185" />
+            <TabItem Header="GERA ETIQUETA" Height="120" FontSize="24" Width="185" >
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox Header="Por código" FontSize="12" Grid.RowSpan="2" Margin="0">
+                            <Grid>
+                                <TextBlock Text="Código:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="10,10,0,0"></TextBlock>
+                                <TextBox x:Name="tbCodCod" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,7,0,0" Width="215" TextChanged="tbCodCod_TextChanged"/>
+                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0" Height="168">
+                                    <Image x:Name="imgCodCod" Margin="10,0,0,0"/>
+                                </GroupBox>
+                            </Grid>
+                        </GroupBox>
+                        <Button x:Name="btnCodImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12"></Button>
+                    </Grid>
+                    <Grid Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox Header="Pré-definido" FontSize="12" Grid.RowSpan="2">
+                            <Grid>
+                                <TextBlock Text="Funcionário:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="10,10,0,0"></TextBlock>
+                                <ComboBox x:Name="cbFunc" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="80,7,0,0" Width="209" DropDownClosed="cbFunc_DropDownClosed"/>
+                                <TextBlock Text="Destino:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="298,10,0,0"></TextBlock>
+                                <ComboBox x:Name="cbDestino" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="346,7,0,0" Width="250" DropDownClosed="cbDestino_DropDownClosed"/>
+                                <Button x:Name="btnPreAtu" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="22" Content="Atualizar" Margin="626,7,0,0" Click="btnPreAtu_Click"></Button>
+                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0" Height="168">
+                                    <Image x:Name="imgPre" Margin="10,0,0,0"/>
+                                </GroupBox>
+                                
+                            </Grid>
+                        </GroupBox>
+                        <Button x:Name="btnPreImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12"></Button>
+                    </Grid>
+
+
+                </Grid>
+
+
+
+            </TabItem>
+
         </TabControl>
         <!--Linha 2-->
     </Grid>
