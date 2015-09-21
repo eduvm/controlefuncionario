@@ -209,7 +209,7 @@
                             <Grid>
                                 <TextBlock Text="Código:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="10,10,0,0"></TextBlock>
                                 <TextBox x:Name="tbCodCod" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,7,0,0" Width="215" TextChanged="tbCodCod_TextChanged"/>
-                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0" Height="168">
+                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0,34,0,40">
                                     <Image x:Name="imgCodCod" Margin="10,0,0,0"/>
                                 </GroupBox>
                             </Grid>
@@ -228,7 +228,7 @@
                                 <TextBlock Text="Destino:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="298,10,0,0"></TextBlock>
                                 <ComboBox x:Name="cbDestino" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="346,7,0,0" Width="250" DropDownClosed="cbDestino_DropDownClosed"/>
                                 <Button x:Name="btnPreAtu" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="22" Content="Atualizar" Margin="626,7,0,0" Click="btnPreAtu_Click"></Button>
-                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0" Height="168">
+                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0,34,0,40">
                                     <Image x:Name="imgPre" Margin="10,0,0,0"/>
                                 </GroupBox>
                                 
