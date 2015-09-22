@@ -93,6 +93,8 @@
     <Compile Include="Clientes\Cliente.cs" />
     <Compile Include="Clientes\ListaClientes.cs" />
     <Compile Include="Conversores\CvBarCode.cs" />
+    <Compile Include="Funcionario\Funcionario.cs" />
+    <Compile Include="Funcionario\ListaFuncionarios.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

@@ -32,6 +32,7 @@ using System.Windows.Media.Imaging;
 using BarcodeLib;
 
 using Controle_de_Etiquetas.Clientes;
+using Controle_de_Etiquetas.Funcionario;
 using Controle_de_Etiquetas.Helpers;
 
 #endregion
@@ -231,23 +232,36 @@ namespace Controle_de_Etiquetas {
         /// </summary>
         private void CarregaFuncionarios() {
 
-            // Limpa registros do dataGrid
+            // Limpa dataGrid
             dgFuncionarios.ItemsSource = null;
 
             try {
+                // Gera novo objeto de conexao ao banco de dados
+                var objFunc = new DatabaseHelper();
 
-                // Cria objeto de acesso ao banco de dados
-                var objCarregaFuncionario = new DatabaseHelper();
+                // Define SQL Query
+                var query = "SELECT id , c_nome FROM dados.funcionario WHERE b_deletado = false ORDER BY id";
 
-                // Comando SQL
-                var SQL = "SELECT id, c_funcionario FROM dados.funcionario WHERE b_deletado = false ORDER BY id";
+                // Executa a query
+                var dt = objFunc.GetDataTable(query);
 
-                // Pega DataTable com resultado do SQL
-                var result = objCarregaFuncionario.GetDataTable(SQL);
+                // Gera nova lista de clientes
+                var lFuncionarios = new ListaFuncionarios();
 
-                // Seta item source do DataGrid
-                dgFuncionarios.ItemsSource = result.DefaultView;
+                // Faz for para preencher a lista de pessoas
+                foreach (DataRow row in dt.Rows) {
+                    lFuncionarios.Add(new Funcionario.Funcionario {
+                        Id = row["id"].ToString(),
+                        Nome = row["c_nome"].ToString(),
+                        BarCode = row["id"].ToString()
+                    });
+                }
+
+                // Faz bind da lista de pessoas no Grid
+                dgFuncionarios.ItemsSource = lFuncionarios;
             }
+
+                // Trata excessão
             catch (Exception fail) {
                 // Seta mensagem de erro
                 var error = "O seguinte erro ocorreu:\n\n";
@@ -261,6 +275,7 @@ namespace Controle_de_Etiquetas {
                 // Fecha o formulário
                 Close();
             }
+
         }
 
         /// <summary>
