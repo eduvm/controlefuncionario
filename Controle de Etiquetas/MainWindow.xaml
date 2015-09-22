@@ -210,11 +210,13 @@
                                 <TextBlock Text="Código:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="10,10,0,0"></TextBlock>
                                 <TextBox x:Name="tbCodCod" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,7,0,0" Width="215" TextChanged="tbCodCod_TextChanged"/>
                                 <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0,34,0,40">
-                                    <Image x:Name="imgCodCod" Margin="10,0,0,0"/>
+                                    <Grid x:Name="impCod" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="40,0,0,0">
+                                        <Image x:Name="imgCodCod" Margin="0" Width="491" Height="144" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
                                 </GroupBox>
                             </Grid>
                         </GroupBox>
-                        <Button x:Name="btnCodImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12"></Button>
+                        <Button x:Name="btnCodImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12" Click="btnCodImp_Click"></Button>
                     </Grid>
                     <Grid Row="1">
                         <Grid.RowDefinitions>
@@ -229,12 +231,14 @@
                                 <ComboBox x:Name="cbDestino" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="346,7,0,0" Width="250" DropDownClosed="cbDestino_DropDownClosed"/>
                                 <Button x:Name="btnPreAtu" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="22" Content="Atualizar" Margin="626,7,0,0" Click="btnPreAtu_Click"></Button>
                                 <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0,34,0,40">
-                                    <Image x:Name="imgPre" Margin="10,0,0,0"/>
+                                    <Grid x:Name="impPre" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="40,0,0,0">
+                                        <Image x:Name="imgPre" Margin="0" Width="491" Height="144" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
                                 </GroupBox>
                                 
                             </Grid>
                         </GroupBox>
-                        <Button x:Name="btnPreImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12"></Button>
+                        <Button x:Name="btnPreImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12" Click="btnPreImp_Click"></Button>
                     </Grid>
 
 
