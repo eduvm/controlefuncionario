@@ -21,9 +21,12 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
+using System.Printing;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using BarcodeLib;
@@ -31,6 +34,7 @@ using BarcodeLib;
 using Controle_de_Etiquetas.Helpers;
 
 using Image = System.Drawing.Image;
+using Point = System.Drawing.Point;
 
 #endregion
 
@@ -127,7 +131,7 @@ namespace Controle_de_Etiquetas {
             var SQL = String.Format("SELECT id FROM dados.funcionario WHERE c_funcionario = '{0}'", cbFunc.Text);
 
             // Executo SQL salvando resultado na variável
-            CodFunc = objDB.ExecuteScalar(SQL).PadLeft(4,'0');
+            CodFunc = objDB.ExecuteScalar(SQL).PadLeft(4, '0');
 
             // Faço junção dos textos
             var CodigoBarras = CodFunc + CodDest;
@@ -528,6 +532,7 @@ namespace Controle_de_Etiquetas {
             MemoryStream ms = new MemoryStream();
             img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             ms.Position = 0;
+
             BitmapImage bi = new BitmapImage();
             bi.BeginInit();
             bi.StreamSource = ms;
@@ -587,7 +592,61 @@ namespace Controle_de_Etiquetas {
 
         }
 
+        private void ImprimirEtq(Grid objeto) {
+
+            // Gera novo dialog print
+            var printDialog = new PrintDialog();
+
+            // Define queue da dialog
+            var pq = LocalPrintServer.GetDefaultPrintQueue();
+
+            // Define novo Print Ticket
+            var pt = pq.DefaultPrintTicket;
+
+            // Seta tamanho do papel
+            pt.PageMediaSize = new PageMediaSize(396, 130);
+
+            // Seta Print Ticket na dialog
+            printDialog.PrintTicket = pt;
+
+            // Define margem
+            var xMargin = 38;
+            var yMargin = 4;
+
+            // Define tamanho da área a ser imprimida
+            var printableWidth = pt.PageMediaSize.Width.Value;
+            var printableHeight = pt.PageMediaSize.Height.Value;
+
+            // Define a escala do objeto a ser imprimido para se encaixar no tamanho do papel
+            var xScale = (printableWidth - xMargin*2)/printableWidth;
+            var yScale = (printableHeight - yMargin*2)/printableHeight;
+
+            // Transforma o tamanho do objeto
+            objeto.LayoutTransform = new MatrixTransform(xScale, 0, 0, yScale, xMargin, yMargin);
+
+            // Verifica se deve mesmo imprimir
+            if (printDialog.ShowDialog() == true) {
+
+                // Envia impressão para a impressora
+                printDialog.PrintVisual(objeto, "Etiqueta");
+            }
+
+        }
+
         #endregion Métodos
+
+        private void btnCodImp_Click(object sender, RoutedEventArgs e) {
+
+            // Chama método que imprime a etiqueta
+            ImprimirEtq(impCod);
+
+        }
+
+        private void btnPreImp_Click(object sender, RoutedEventArgs e) {
+            // Chama método que imprime a etiqueta
+            ImprimirEtq(impPre);
+        }
+
     }
 
 }
