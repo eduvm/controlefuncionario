@@ -15,26 +15,24 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Printing;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.IO;
-using System.Printing;
 using System.Windows.Controls;
-using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using BarcodeLib;
 
+using Controle_de_Etiquetas.Clientes;
 using Controle_de_Etiquetas.Helpers;
-
-using Image = System.Drawing.Image;
-using Point = System.Drawing.Point;
 
 #endregion
 
@@ -54,25 +52,53 @@ namespace Controle_de_Etiquetas {
             CarregaFuncionarios();
 
             // Chama método que faz o carregamento do cadsatro de destinos
-            CarregaDestinos();
+            CarregaClientes();
 
             // Chama método que faz o carregamendo do cadastro de controle
             CarregaControle();
 
             // Chama função que carrega os combos de funcionario e de destino
-            CarregaCombos();
+            //CarregaCombos();
 
             // Instacia Thread passando a ThreadStart
-            MinhaThread = new Thread(EscutarConexao);
+            //MinhaThread = new Thread(EscutarConexao);
 
             // Seto thread como background
-            MinhaThread.IsBackground = true;
+            //MinhaThread.IsBackground = true;
 
             // Inicia a Thread
-            MinhaThread.Start();
+            //MinhaThread.Start();
         }
 
         #endregion Construtores
+
+        private void btnCodImp_Click(object sender, RoutedEventArgs e) {
+
+            // Chama método que imprime a etiqueta
+            ImprimirEtq(impCod);
+
+        }
+
+        private void btnPreImp_Click(object sender, RoutedEventArgs e) {
+            // Chama método que imprime a etiqueta
+            ImprimirEtq(impPre);
+        }
+
+        private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e) {
+            var t = (TextBox) sender;
+            var filter = t.Text;
+            var cv = CollectionViewSource.GetDefaultView(dgClientes.ItemsSource);
+
+            if (filter == "") {
+                cv.Filter = null;
+            }
+            else {
+                cv.Filter = o => {
+                    var p = o as Cliente;
+                    return (p.NomeFantasia.ToUpper().StartsWith(filter.ToUpper()));
+                };
+            }
+        }
 
         #region Botões
 
@@ -110,7 +136,7 @@ namespace Controle_de_Etiquetas {
             CarregaCombos();
         }
 
-        private void tbCodCod_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e) {
+        private void tbCodCod_TextChanged(object sender, TextChangedEventArgs e) {
 
             // Verifica se texto não está em branco
             if (!string.IsNullOrEmpty(tbCodCod.Text)) {
@@ -125,10 +151,10 @@ namespace Controle_de_Etiquetas {
         private void cbFunc_DropDownClosed(object sender, EventArgs e) {
 
             // Gero novo objeto de acesso ao banco de dados
-            DatabaseHelper objDB = new DatabaseHelper();
+            var objDB = new DatabaseHelper();
 
             // Gero novo comando SQL
-            var SQL = String.Format("SELECT id FROM dados.funcionario WHERE c_funcionario = '{0}'", cbFunc.Text);
+            var SQL = string.Format("SELECT id FROM dados.funcionario WHERE c_funcionario = '{0}'", cbFunc.Text);
 
             // Executo SQL salvando resultado na variável
             CodFunc = objDB.ExecuteScalar(SQL).PadLeft(4, '0');
@@ -137,7 +163,7 @@ namespace Controle_de_Etiquetas {
             var CodigoBarras = CodFunc + CodDest;
 
             // Se a string não for nula
-            if (!String.IsNullOrEmpty(CodigoBarras)) {
+            if (!string.IsNullOrEmpty(CodigoBarras)) {
 
                 // Chamo rotina de gerar o código de barras
                 GeraBarCode(CodigoBarras, 2);
@@ -148,10 +174,10 @@ namespace Controle_de_Etiquetas {
         private void cbDestino_DropDownClosed(object sender, EventArgs e) {
 
             // Gero novo objeto de acesso ao banco de dados
-            DatabaseHelper objDB = new DatabaseHelper();
+            var objDB = new DatabaseHelper();
 
             // REdefinno comando SQL
-            var SQL = String.Format("SELECT id FROM dados.destino WHERE c_nome = '{0}'", cbDestino.Text);
+            var SQL = string.Format("SELECT id FROM dados.destino WHERE c_nome = '{0}'", cbDestino.Text);
 
             // Executo SQL salvando resultado na variável
             CodDest = objDB.ExecuteScalar(SQL).PadLeft(5, '0');
@@ -160,7 +186,7 @@ namespace Controle_de_Etiquetas {
             var CodigoBarras = CodFunc + CodDest;
 
             // Se a string não for nula
-            if (!String.IsNullOrEmpty(CodigoBarras)) {
+            if (!string.IsNullOrEmpty(CodigoBarras)) {
 
                 // Chamo rotina de gerar o código de barras
                 GeraBarCode(CodigoBarras, 2);
@@ -181,10 +207,10 @@ namespace Controle_de_Etiquetas {
         private Thread MinhaThread;
 
         // Define porta
-        private int Porta = 5000;
+        private readonly int Porta = 5000;
 
         // Define IP
-        private IPAddress Server = IPAddress.Parse("10.14.1.56");
+        private readonly IPAddress Server = IPAddress.Parse("10.14.1.56");
 
         // Defino objeto TcpListene
         private TcpListener tcpServidor;
@@ -204,57 +230,120 @@ namespace Controle_de_Etiquetas {
         ///     Método responsável por carregar os funcionários cadastrados no banco de dados
         /// </summary>
         private void CarregaFuncionarios() {
+
             // Limpa registros do dataGrid
             dgFuncionarios.ItemsSource = null;
 
-            // Cria objeto de acesso ao banco de dados
-            var objCarregaFuncionario = new DatabaseHelper();
+            try {
 
-            // Comando SQL
-            var SQL = "SELECT id, c_funcionario FROM dados.funcionario WHERE b_deletado = false ORDER BY id";
+                // Cria objeto de acesso ao banco de dados
+                var objCarregaFuncionario = new DatabaseHelper();
 
-            // Pega DataTable com resultado do SQL
-            var result = objCarregaFuncionario.GetDataTable(SQL);
+                // Comando SQL
+                var SQL = "SELECT id, c_funcionario FROM dados.funcionario WHERE b_deletado = false ORDER BY id";
 
-            // Seta item source do DataGrid
-            dgFuncionarios.ItemsSource = result.DefaultView;
+                // Pega DataTable com resultado do SQL
+                var result = objCarregaFuncionario.GetDataTable(SQL);
+
+                // Seta item source do DataGrid
+                dgFuncionarios.ItemsSource = result.DefaultView;
+            }
+            catch (Exception fail) {
+                // Seta mensagem de erro
+                var error = "O seguinte erro ocorreu:\n\n";
+
+                // Anexa mensagem de erro na mensagem
+                error += fail.Message + "\n\n";
+
+                // Apresenta mensagem na tela
+                MessageBox.Show(error);
+
+                // Fecha o formulário
+                Close();
+            }
         }
 
         /// <summary>
         ///     Método responsável por carregar os funcionários cadastrados no banco de dados
         /// </summary>
-        private void CarregaDestinos() {
-            // Limpa registros do dataGrid
-            dgDestino.ItemsSource = null;
+        private void CarregaClientes() {
 
-            // Cria objeto de acesso ao banco de dados
-            var objCarregaDestino = new DatabaseHelper();
+            // Limpa dataGrid
+            dgClientes.ItemsSource = null;
 
-            // Comando SQL
-            var SQL = "SELECT id, c_nome FROM dados.destino WHERE b_deletado = false ORDER BY id";
+            try {
+                // Gera novo objeto de conexao ao banco de dados
+                var objCliente = new DatabaseHelper("etiquetas");
 
-            // Pega DataTable com resultado do SQL
-            var result = objCarregaDestino.GetDataTable(SQL);
+                // Define SQL Query
+                var query = "SELECT id , c_nomefantas, i_cdcliente FROM dados.cliente WHERE b_deletado = false ORDER BY id";
 
-            // Seta item source do DataGrid
-            dgDestino.ItemsSource = result.DefaultView;
+                // Executa a query
+                var dt = objCliente.GetDataTable(query);
+
+                // Gera nova lista de clientes
+                var lClientes = new ListaClientes();
+
+                // Faz for para preencher a lista de pessoas
+                foreach (DataRow row in dt.Rows) {
+                    lClientes.Add(new Cliente {
+                        Id = row["id"].ToString(),
+                        NomeFantasia = row["c_nomefantas"].ToString(),
+                        Cpd = row["i_cdcliente"].ToString(),
+                        BarCode = row["i_cdcliente"].ToString()
+                    });
+                }
+
+                // Faz bind da lista de pessoas no Grid
+                dgClientes.ItemsSource = lClientes;
+            }
+
+                // Trata excessão
+            catch (Exception fail) {
+                // Seta mensagem de erro
+                var error = "O seguinte erro ocorreu:\n\n";
+
+                // Anexa mensagem de erro na mensagem
+                error += fail.Message + "\n\n";
+
+                // Apresenta mensagem na tela
+                MessageBox.Show(error);
+
+                // Fecha o formulário
+                Close();
+            }
+
         }
 
         private void CarregaControle() {
             // Limpa registros do dataGrid
             dgControle.ItemsSource = null;
 
-            // Cria objeto de acesso ao banco de dados
-            var objCarregaControle = new DatabaseHelper();
+            try {
+                // Cria objeto de acesso ao banco de dados
+                var objCarregaControle = new DatabaseHelper();
 
-            // Comando SQL
-            var SQL = "SELECT id, n_id_funcionario, d_data, t_hora, n_id_destino  FROM dados.entradas WHERE b_deletado = false ORDER BY id";
+                // Comando SQL
+                var SQL = "SELECT id, n_id_funcionario, d_data, t_hora, n_id_destino  FROM dados.entradas WHERE b_deletado = false ORDER BY id";
 
-            // Pega DataTable com resultado do SQL
-            var result = objCarregaControle.GetDataTable(SQL);
+                // Pega DataTable com resultado do SQL
+                var result = objCarregaControle.GetDataTable(SQL);
 
-            // Seta item source do DataGrid
-            dgControle.ItemsSource = result.DefaultView;
+                // Seta item source do DataGrid
+                dgControle.ItemsSource = result.DefaultView;
+            }
+
+            catch (Exception fail) {
+                // Seta mensagem de erro
+                var error = "O seguinte erro ocorreu:\n\n";
+
+                // Anexa mensagem de erro na mensagem
+                error += fail.Message + "\n\n";
+
+                // Apresenta mensagem na tela
+                MessageBox.Show(error);
+
+            }
         }
 
         private void EscutarConexao() {
@@ -371,12 +460,12 @@ namespace Controle_de_Etiquetas {
             CadWin.ShowDialog();
 
             // Chama método de carregar os destinos
-            CarregaDestinos();
+            CarregaClientes();
         }
 
         private void ExcluirDestino() {
             // Verifica se existe registro selecionado
-            if (dgDestino.SelectedItem == null) {
+            if (dgClientes.SelectedItem == null) {
                 // Apresenta mensagem de erro
                 MessageBox.Show("Você precisa escolher um destino para excluí-lo");
             }
@@ -384,7 +473,7 @@ namespace Controle_de_Etiquetas {
             // Se existir registro selecionado
             else {
                 // Pega id do registro selecionado
-                var rowview = dgDestino.SelectedItem as DataRowView;
+                var rowview = dgClientes.SelectedItem as DataRowView;
 
                 // Defino valor da coluna id
                 var strId = rowview.Row["id"].ToString();
@@ -404,7 +493,7 @@ namespace Controle_de_Etiquetas {
                     MessageBox.Show("O Destino foi deletado");
 
                     // Chama método que atualiza o grid de destinos
-                    CarregaDestinos();
+                    CarregaClientes();
                 }
 
                 else {
@@ -416,7 +505,7 @@ namespace Controle_de_Etiquetas {
 
         private void AlterarDestino() {
             // Verifico se existe registro selecionado
-            if (dgDestino.SelectedItem == null) {
+            if (dgClientes.SelectedItem == null) {
                 // Informo que deve selecionar um registro
                 MessageBox.Show("Você deve selecionar um registro para alterá-lo");
             }
@@ -424,7 +513,7 @@ namespace Controle_de_Etiquetas {
             // Se existe registro selecionado
             else {
                 // Pega id do registro selecionado
-                var rowview = dgDestino.SelectedItem as DataRowView;
+                var rowview = dgClientes.SelectedItem as DataRowView;
 
                 // Defino valor da coluna id
                 var strId = rowview.Row["id"].ToString();
@@ -436,7 +525,7 @@ namespace Controle_de_Etiquetas {
                 CadWin.ShowDialog();
 
                 // Chama método de carregar os destinos
-                CarregaDestinos();
+                CarregaClientes();
             }
         }
 
@@ -519,21 +608,21 @@ namespace Controle_de_Etiquetas {
 
         private void GeraBarCode(string texto, int tipo) {
 
-            Barcode barcode = new Barcode() {
+            var barcode = new Barcode {
                 IncludeLabel = true,
                 Alignment = AlignmentPositions.CENTER,
                 Width = 300,
                 Height = 100,
-                RotateFlipType = RotateFlipType.RotateNoneFlipNone,
+                RotateFlipType = RotateFlipType.RotateNoneFlipNone
             };
 
-            Image img = barcode.Encode(TYPE.CODE128, texto);
+            var img = barcode.Encode(TYPE.CODE128, texto);
 
-            MemoryStream ms = new MemoryStream();
-            img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            var ms = new MemoryStream();
+            img.Save(ms, ImageFormat.Png);
             ms.Position = 0;
 
-            BitmapImage bi = new BitmapImage();
+            var bi = new BitmapImage();
             bi.BeginInit();
             bi.StreamSource = ms;
             bi.EndInit();
@@ -551,7 +640,7 @@ namespace Controle_de_Etiquetas {
         }
 
         /// <summary>
-        /// Método responsáel por carregar os combos de funcionários e destino com os respectivos valores
+        ///     Método responsáel por carregar os combos de funcionários e destino com os respectivos valores
         /// </summary>
         private void CarregaCombos() {
 
@@ -560,10 +649,10 @@ namespace Controle_de_Etiquetas {
             cbDestino.Items.Clear();
 
             // Cria novo objeto de acesso ao banco de dados
-            DatabaseHelper objDB = new DatabaseHelper();
+            var objDB = new DatabaseHelper();
 
             // Cria comando SQL
-            String SQL = "SELECT c_funcionario FROM dados.funcionario WHERE b_deletado = false";
+            var SQL = "SELECT c_funcionario FROM dados.funcionario WHERE b_deletado = false";
 
             // Executo SQL salvando resultado na variável result
             var result = objDB.GetDataTable(SQL);
@@ -577,7 +666,7 @@ namespace Controle_de_Etiquetas {
             }
 
             // Redefino o SQL para popular o destino
-            SQL = "SELECT c_nome FROM dados.destino WHERE b_deletado = false";
+            SQL = "SELECT c_nomefantas FROM dados.cliente WHERE b_deletado = false";
 
             // Executo SQL salvando resultado na variável result
             result = objDB.GetDataTable(SQL);
@@ -586,7 +675,7 @@ namespace Controle_de_Etiquetas {
             foreach (DataRow row in result.Rows) {
 
                 // Adiciona o nome do funcionário na lista
-                cbDestino.Items.Add(row["c_nome"].ToString());
+                cbDestino.Items.Add(row["c_nomefantas"].ToString());
 
             }
 
@@ -634,19 +723,6 @@ namespace Controle_de_Etiquetas {
         }
 
         #endregion Métodos
-
-        private void btnCodImp_Click(object sender, RoutedEventArgs e) {
-
-            // Chama método que imprime a etiqueta
-            ImprimirEtq(impCod);
-
-        }
-
-        private void btnPreImp_Click(object sender, RoutedEventArgs e) {
-            // Chama método que imprime a etiqueta
-            ImprimirEtq(impPre);
-        }
-
     }
 
 }
