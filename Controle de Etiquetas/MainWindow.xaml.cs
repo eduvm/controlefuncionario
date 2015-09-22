@@ -49,6 +49,12 @@ namespace Controle_de_Etiquetas {
             // Inicializa os componentes da janela
             InitializeComponent();
 
+            // Cria nova instancia da janela de atualização de cliente
+            ImportarClientes WinImport = new ImportarClientes();
+
+            // Mostra janela como Dialog
+            WinImport.ShowDialog();
+
             // Chama método que faz o carregamento do cadastro de funcionários
             CarregaFuncionarios();
 
@@ -62,13 +68,13 @@ namespace Controle_de_Etiquetas {
             //CarregaCombos();
 
             // Instacia Thread passando a ThreadStart
-            //MinhaThread = new Thread(EscutarConexao);
+            MinhaThread = new Thread(EscutarConexao);
 
             // Seto thread como background
-            //MinhaThread.IsBackground = true;
+            MinhaThread.IsBackground = true;
 
             // Inicia a Thread
-            //MinhaThread.Start();
+            MinhaThread.Start();
         }
 
         #endregion Construtores
