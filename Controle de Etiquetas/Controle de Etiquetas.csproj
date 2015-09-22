@@ -76,6 +76,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ImportarClientes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -96,6 +100,9 @@
     <Compile Include="Funcionario\Funcionario.cs" />
     <Compile Include="Funcionario\ListaFuncionarios.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
+    <Compile Include="ImportarClientes.xaml.cs">
+      <DependentUpon>ImportarClientes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
