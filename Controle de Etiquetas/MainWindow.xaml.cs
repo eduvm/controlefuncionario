@@ -143,28 +143,23 @@ namespace Controle_de_Etiquetas {
             NeedStop = true;
         }
 
-        private void btnCodImp_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnCodImp_Click(object sender, RoutedEventArgs e) {
 
             // Chama método que imprime a etiqueta
             ImprimirEtq(impCod);
 
         }
 
-        private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var t = (TextBox)sender;
+        private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e) {
+            var t = (TextBox) sender;
             var filter = t.Text;
             var cv = CollectionViewSource.GetDefaultView(dgClientes.ItemsSource);
 
-            if (filter == "")
-            {
+            if (filter == "") {
                 cv.Filter = null;
             }
-            else
-            {
-                cv.Filter = o =>
-                {
+            else {
+                cv.Filter = o => {
                     var p = o as Cliente;
                     return (p.NomeFantasia.ToUpper().StartsWith(filter.ToUpper()));
                 };
@@ -189,6 +184,15 @@ namespace Controle_de_Etiquetas {
 
         // Defino variável de controle da Thread
         public bool NeedStop;
+
+        // Defino novo objeto que vai receber os dados do código de barras
+        public BarCodeControle EscutaControle = new BarCodeControle();
+
+        private const string CodIni = "INICIALIZA";
+
+        private const string CodFim = "FINALIZA";
+
+        private const string CodRetorno = "RETORNO";
 
         #endregion Variaveis
 
@@ -352,6 +356,7 @@ namespace Controle_de_Etiquetas {
         }
 
         private void EscutarConexao() {
+
             // Seta controle da Thread como false
             NeedStop = false;
 
@@ -394,44 +399,241 @@ namespace Controle_de_Etiquetas {
 
                     // Faz loop para receber o texto da mensagem enviado pelo cliente.
                     while ((i = SocketStream.Read(bytes, 0, bytes.Length)) != 0) {
+
                         // Traduz os bytes para uma string
                         Mensagem = Encoding.ASCII.GetString(bytes, 0, i);
 
-                        // Cria objeto de acesso ao banco de dados
-                        var objControle = new DatabaseHelper();
+                        // Verifica se é a mensagem de iniciar o objeto
+                        if (string.IsNullOrEmpty(EscutaControle.CodigoInicial)) {
 
-                        // Cria dicionário com chave/valor a ser inserido no banco de dados
-                        var dctDados = new Dictionary<string, string>();
+                            if (Mensagem != CodIni) {
 
-                        // Pega data do dia
-                        var dData = DateTime.Now.ToString("dd/MM/yyyy");
+                                // Apresenta mensagem de erro
+                                MessageBox.Show("Você deve primeiro escanear o código de inicialização");
 
-                        // Pega hora atual
-                        var dHora = DateTime.Now.ToString("hh:mm:ss");
+                            }
+                            else {
 
-                        // TODO - Pegar na base de dados o nome do funcionario atraves do codigo de barras recebido
-                        dctDados.Add("n_id_funcionario", Mensagem.Substring(0, 3));
+                                MessageBox.Show("Adicionado inicio do objeto com a mensagem: " + Mensagem);
 
-                        // TODO - Pegar na base de dados o nome do destino através do código de barras recebido
-                        dctDados.Add("n_id_destino", Mensagem.Substring(3, 5));
+                                // Devo marcar no objeto como iniciado
+                                EscutaControle.CodigoInicial = Mensagem;
 
-                        // Adiciono a data no Dicionario de dados
-                        dctDados.Add("d_data", dData);
+                                Dispatcher.Invoke(() => {
 
-                        // Adiciono a hora no Dicionario de dados
-                        dctDados.Add("t_hora", dHora);
+                                    // Limpa Grid
+                                    dgControle.ItemsSource = null;
 
-                        // Insere os dados no banco
-                        if (objControle.Insert("dados.entradas", dctDados)) {
-                            // Chama o método de carregametno de dados através do Invoke porque está rodando em uma Thread diferente
-                            Dispatcher.Invoke(() => {
-                                // Chama método que atualiza o grid de controle
-                                CarregaControle();
-                            });
+                                    // Define objeto EscutaControle como novo ItemsSource
+                                    dgControle.ItemsSource = EscutaControle;
+
+                                });
+
+                            }
+
                         }
+
+                        // Se o objeto já foi inicializado
                         else {
-                            // Informa que ocorreu erro ao tentar adicionar o controle no banco de dados
-                            MessageBox.Show("Ocorreu um erro ao tentar incluir o controle no banco de dados\nPor favor, informe ao seu administrador");
+
+                            // Verifico se o código do funcionário está vazrio
+                            if (string.IsNullOrEmpty(EscutaControle.CodFuncionario)) {
+
+                                var dbResult = RetornaFuncionario(Mensagem);
+
+                                // Verifico se existe o funcionario com o código da mensagem
+                                if (string.IsNullOrEmpty(dbResult)) {
+
+                                    // Apresento mensagem de que não reconheceu o funcionário
+                                    MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+
+                                }
+
+                                // Se conseguiu encontrar o funcionário
+                                else {
+
+                                    // Grava código do funcionário no objeto
+                                    MessageBox.Show("Gravando código do funcionario como " + Mensagem);
+                                    EscutaControle.CodFuncionario = Mensagem;
+
+                                }
+
+                            }
+
+                            // Se o objeto ja foi inicializado, e o funcionário preenchido
+                            // Neste caso, a Mensagem é o codigo do cliente
+                            else {
+
+                                switch (Mensagem) {
+
+                                    case CodFim: {
+
+                                        // Verificose existem registros a serem gravados no banco
+                                        if (EscutaControle.Count > 0) {
+
+                                            // Gero laço para percorrer a lista de registros
+
+                                            foreach (var iControle in EscutaControle) {
+
+                                                // Crio objeto de acesso ao banco de dados
+                                                var objDB = new DatabaseHelper();
+
+                                                // Crio Dicionario que vai conter os campos  e valores
+                                                var dctDados = new Dictionary<string, string>();
+
+                                                // Adiciono dados no dicionario
+                                                dctDados.Add("c_nomefuncionario", iControle.NomeFuncionario);
+                                                dctDados.Add("i_funcionario_id", iControle.IdFuncionario);
+                                                dctDados.Add("c_nomecliente", iControle.NomeCliente);
+                                                dctDados.Add("i_cliente_id", iControle.IdCliente);
+                                                dctDados.Add("d_data_saida", iControle.DataSaida);
+                                                dctDados.Add("t_hora_saida", iControle.HoraSaida);
+                                                dctDados.Add("b_fechado", iControle.FlagFechado.ToString());
+
+                                                // Verifico se não consseguir incluir os dados no banco
+                                                if (!objDB.Insert("dados.entradas", dctDados)) {
+
+                                                    // Apresenta mensagem de erro
+                                                    MessageBox.Show("Ocorreu um erro ao tentar adicionar o registro");
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                        // Devo limpar o objeto
+                                        Dispatcher.Invoke(() => {
+
+                                            // Limpa o objeto para ser usado novamente
+                                            EscutaControle.CodFinal = null;
+                                            EscutaControle.CodFuncionario = null;
+                                            EscutaControle.CodigoInicial = null;
+                                            EscutaControle.Clear();
+
+                                            // Define objeto EscutaControle como novo ItemsSource
+                                            CarregaControle();
+
+                                        });
+
+                                        break;
+                                    }
+
+                                    case CodRetorno: {
+
+                                        // Gero novo objeto de acesso ao banco de dados
+                                        DatabaseHelper objDB = new DatabaseHelper();
+
+                                        // Gero novo comando SQL
+                                        string SQL = String.Format("SELECT id FROM dados.entradas WHERE i_funcionario_id = '{0}' AND b_fechado = false",EscutaControle.CodFuncionario);
+
+                                        // Salvo resultado do SQL em um datatable
+                                        DataTable dtResult = objDB.GetDataTable(SQL);
+
+                                        // Defino data de saída
+                                        var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
+
+                                        // Defino hora de saída
+                                        var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+
+                                        // Crio laço para rodar em cada resultado
+                                        foreach (DataRow row in dtResult.Rows) {
+
+                                            // Defino novo dicionario com campo/valor
+                                            Dictionary<string,string> dctDados = new Dictionary<string, string>();
+
+                                            // Adiciono campos no dicionario
+                                            dctDados.Add("d_data_chegada",dtDataRetorno);
+                                            dctDados.Add("t_hora_chegada", dtHoraRetorno);
+                                            dctDados.Add("b_fechado", "true");
+
+                                            // Tenta atualizar os registros
+                                            if (!objDB.Update("entradas",dctDados,"id = " + row["id"])) {
+
+                                                MessageBox.Show("Ocorreu um erro ao tentar fechar as saídas");
+                                                
+                                            }
+
+                                        }
+
+                                        // Devo limpar e recarregar o Grid de Controle
+                                        Dispatcher.Invoke(() =>
+                                        {
+
+                                            // Define objeto EscutaControle como novo ItemsSource
+                                            CarregaControle();
+
+                                        });
+
+
+                                        break;
+                                    }
+
+                                    default: {
+
+                                        // Carrego nome do cliente
+                                        var dbResult = RetornaCliente(Mensagem);
+
+                                        // Verifico se o cliente existe
+                                        if (string.IsNullOrEmpty(dbResult)) {
+
+                                            // Apresento mensagem de que não existe o cliente
+                                            MessageBox.Show("Não foi possível localizar o cliente com o código :" + Mensagem);
+
+                                        }
+
+                                        // Se conseguir encontrar o cliente
+                                        else {
+
+                                            // Crio novo objeto controle
+                                            var ctrTemp = new Controle();
+
+                                            // Defino ID
+                                            ctrTemp.Id = "*";
+
+                                            // Defino funcionario com o funcionário atual
+                                            ctrTemp.IdFuncionario = EscutaControle.CodFuncionario;
+
+                                            // Defino nome do funcionario
+                                            ctrTemp.NomeFuncionario = RetornaFuncionario(EscutaControle.CodFuncionario);
+
+                                            // Defino código do cliente
+                                            ctrTemp.IdCliente = Mensagem;
+
+                                            // Defino nome do cliente
+                                            ctrTemp.NomeCliente = RetornaCliente(Mensagem);
+
+                                            // Defino data de saída
+                                            ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
+
+                                            // Defino hora de saída
+                                            ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+
+                                            // Defino flag como aberto
+                                            ctrTemp.FlagFechado = false;
+
+                                            Dispatcher.Invoke(() => {
+
+                                                // Adiciono o objeto na lista de objetos
+                                                EscutaControle.Add(ctrTemp);
+
+                                            });
+
+                                        }
+
+                                        break;
+
+                                    }
+
+                                }
+
+                                // Verifico se devo fechar o registro
+                                if (Mensagem == CodFim) {
+
+                                }
+
+                            }
+
                         }
 
                         // Define mensagem de resposta transformando de string para bytes
@@ -455,6 +657,36 @@ namespace Controle_de_Etiquetas {
                 // Finaliza a escuta
                 tcpServidor.Stop();
             }
+        }
+
+        private static string RetornaFuncionario(string CodFunc) {
+
+            // Crio novo objeto de acesso ao banco de dados
+            var objDB = new DatabaseHelper();
+
+            // Defino SQL
+            var SQL = string.Format("SELECT c_nome FROM dados.funcionario WHERE id = '{0}'", CodFunc);
+
+            // Executo query e salvo na variável result
+            var dbResult = objDB.ExecuteScalar(SQL);
+
+            return dbResult;
+
+        }
+
+        private static string RetornaCliente(string CodCli) {
+
+            // Crio novo objeto de acesso ao banco de dados
+            var objDB = new DatabaseHelper();
+
+            // Defino SQL
+            var SQL = string.Format("SELECT c_nomefantas FROM dados.cliente WHERE i_cdcliente = '{0}'", CodCli);
+
+            // Executo query e salvo na variável result
+            var dbResult = objDB.ExecuteScalar(SQL);
+
+            return dbResult;
+
         }
 
         private void IncluirCliente() {
