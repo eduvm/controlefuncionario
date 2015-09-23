@@ -414,12 +414,13 @@ namespace Controle_de_Etiquetas {
                             }
                             else {
 
-                                MessageBox.Show("Adicionado inicio do objeto com a mensagem: " + Mensagem);
-
                                 // Devo marcar no objeto como iniciado
                                 EscutaControle.CodigoInicial = Mensagem;
 
                                 Dispatcher.Invoke(() => {
+
+                                    // Apresenta mensagem de informação
+                                    tbInformação.Text = "Iniciada saída:";
 
                                     // Limpa Grid
                                     dgControle.ItemsSource = null;
@@ -453,8 +454,14 @@ namespace Controle_de_Etiquetas {
                                 else {
 
                                     // Grava código do funcionário no objeto
-                                    MessageBox.Show("Gravando código do funcionario como " + Mensagem);
                                     EscutaControle.CodFuncionario = Mensagem;
+                                        
+                                    Dispatcher.Invoke(() => {
+
+                                        // Apresenta mensagem de informação
+                                        tbInformação.Text = "Funcionário: " + dbResult;
+
+                                    });;
 
                                 }
 
@@ -514,6 +521,9 @@ namespace Controle_de_Etiquetas {
                                             // Define objeto EscutaControle como novo ItemsSource
                                             CarregaControle();
 
+                                            // Apresenta mensagem de informação
+                                            tbInformação.Text = "Cadastro finalizado";
+
                                         });
 
                                         break;
@@ -562,6 +572,9 @@ namespace Controle_de_Etiquetas {
 
                                             // Define objeto EscutaControle como novo ItemsSource
                                             CarregaControle();
+
+                                            // Apresenta mensagem de informação
+                                            tbInformação.Text = "Gravado retorno";
 
                                         });
 
