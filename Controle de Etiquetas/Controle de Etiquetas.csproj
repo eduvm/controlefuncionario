@@ -68,7 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="CadDestino.xaml">
+    <Page Include="CadCliente.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -88,8 +88,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CadDestino.xaml.cs">
-      <DependentUpon>CadDestino.xaml</DependentUpon>
+    <Compile Include="CadCliente.xaml.cs">
+      <DependentUpon>CadCliente.xaml</DependentUpon>
     </Compile>
     <Compile Include="CadFuncionario.xaml.cs">
       <DependentUpon>CadFuncionario.xaml</DependentUpon>
@@ -97,8 +97,8 @@
     <Compile Include="Clientes\Cliente.cs" />
     <Compile Include="Clientes\ListaClientes.cs" />
     <Compile Include="Conversores\CvBarCode.cs" />
-    <Compile Include="Funcionario\Funcionario.cs" />
-    <Compile Include="Funcionario\ListaFuncionarios.cs" />
+    <Compile Include="Funcionarios\Funcionario.cs" />
+    <Compile Include="Funcionarios\ListaFuncionarios.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="ImportarClientes.xaml.cs">
       <DependentUpon>ImportarClientes.xaml</DependentUpon>

@@ -55,6 +55,25 @@ namespace Controle_de_Etiquetas {
             // Mostra janela como Dialog
             WinImport.ShowDialog();
 
+            // Recebe todos os argumentos recebidos
+            string[] args = Environment.GetCommandLineArgs();
+
+
+            // Verificase deve habilitar os botões de inclusão
+            if (!string.IsNullOrEmpty(args[0]) && args[0] == "dev") {
+
+                // Cadastro de clientes
+                btnCadDestino.IsEnabled = true;
+                btnAlterarDestino.IsEnabled = true;
+                btnExcluirDestino.IsEnabled = true;
+
+                // Cadastro de funcionários
+                btnIncluirFunc.IsEnabled = true;
+                btnAlterarFunc.IsEnabled = true;
+                btnExcluirFunc.IsEnabled = true;
+
+            }
+
             // Chama método que faz o carregamento do cadastro de funcionários
             CarregaFuncionarios();
 
@@ -111,17 +130,17 @@ namespace Controle_de_Etiquetas {
 
         private void btnCadDestino_Click(object sender, RoutedEventArgs e) {
             // Chama método que para fazer inclusão de destinos
-            IncluirDestino();
+            IncluirCliente();
         }
 
         private void btnExcluirDestino_Click(object sender, RoutedEventArgs e) {
             // Chama método que exlcuir o destino
-            ExcluirDestino();
+            ExcluirCliente();
         }
 
         private void btnAlterarDestino_Click(object sender, RoutedEventArgs e) {
             // Chama rotina de alteração
-            AlterarDestino();
+            AlterarCliente();
         }
 
         private void bntIncluirFunc_Click(object sender, RoutedEventArgs e) {
@@ -473,18 +492,18 @@ namespace Controle_de_Etiquetas {
             }
         }
 
-        private void IncluirDestino() {
-            // Cria nova instância da janela de Cadastro de Destinos
-            var CadWin = new CadDestino("incluir", "");
+        private void IncluirCliente() {
+            // Cria nova instância da janela de Cadastro de Clientes
+            var CadWin = new CadCliente("incluir", "");
 
-            // Chama (mostra na tela) a janela de Cadastro de Destinos
+            // Chama (mostra na tela) a janela de Cadastro de Clientes
             CadWin.ShowDialog();
 
-            // Chama método de carregar os destinos
+            // Chama método de carregar os clientes
             CarregaClientes();
         }
 
-        private void ExcluirDestino() {
+        private void ExcluirCliente() {
             // Verifica se existe registro selecionado
             if (dgClientes.SelectedItem == null) {
                 // Apresenta mensagem de erro
@@ -493,11 +512,12 @@ namespace Controle_de_Etiquetas {
 
             // Se existir registro selecionado
             else {
-                // Pega id do registro selecionado
-                var rowview = dgClientes.SelectedItem as DataRowView;
 
+                // Gero objeto cliente com os dados do cliente selecionado
+                Cliente objCLiente = (Cliente) dgClientes.SelectedItem;
+                
                 // Defino valor da coluna id
-                var strId = rowview.Row["id"].ToString();
+                var strId = objCLiente.Id;
 
                 // Cria objeto de acesso ao banco de dados
                 var objDB = new DatabaseHelper();
@@ -509,9 +529,9 @@ namespace Controle_de_Etiquetas {
                 dctDados.Add("b_deletado", "true");
 
                 // Chama método que faz alteração no banco de dados
-                if (objDB.Update("dados.destino", dctDados, "id = " + strId)) {
+                if (objDB.Update("dados.cliente", dctDados, "id = " + strId)) {
                     // Informa que o registro foi alterado com sucesso
-                    MessageBox.Show("O Destino foi deletado");
+                    MessageBox.Show("O cliente foi deletado");
 
                     // Chama método que atualiza o grid de destinos
                     CarregaClientes();
@@ -519,12 +539,12 @@ namespace Controle_de_Etiquetas {
 
                 else {
                     // Informo que ocorreu erro
-                    MessageBox.Show("Ocorreu um erro ao tentar excluir o destino");
+                    MessageBox.Show("Ocorreu um erro ao tentar excluir o cliente");
                 }
             }
         }
 
-        private void AlterarDestino() {
+        private void AlterarCliente() {
             // Verifico se existe registro selecionado
             if (dgClientes.SelectedItem == null) {
                 // Informo que deve selecionar um registro
@@ -533,14 +553,15 @@ namespace Controle_de_Etiquetas {
 
             // Se existe registro selecionado
             else {
-                // Pega id do registro selecionado
-                var rowview = dgClientes.SelectedItem as DataRowView;
 
-                // Defino valor da coluna id
-                var strId = rowview.Row["id"].ToString();
+                // Defino novo objeto Funcionario com o registro selecionado
+                Cliente selecionado = (Cliente)dgClientes.SelectedItem;
+
+                // Gravo na variável o Id do usuário selecionado
+                var strId = selecionado.Id;
 
                 // Cria nova instância da janela de Cadastro de Destinos
-                var CadWin = new CadDestino("alterar", strId);
+                var CadWin = new CadCliente("alterar", strId);
 
                 // Chama (mostra na tela) a janela de Cadastro de Destinos
                 CadWin.ShowDialog();

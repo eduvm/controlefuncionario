@@ -165,9 +165,9 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="btnCadDestino" Content="INCLUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80" Click="btnCadDestino_Click"></Button>
-                        <Button x:Name="btnExcluirDestino" Content="EXLCUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30" Click="btnExcluirDestino_Click"></Button>
-                        <Button x:Name="btnAlterarDestino" Content="ALTERAR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30" Click="btnAlterarDestino_Click"></Button>
+                        <Button x:Name="btnCadDestino" Content="INCLUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80" Click="btnCadDestino_Click" IsEnabled="False"/>
+                        <Button x:Name="btnExcluirDestino" Content="EXLCUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30" Click="btnExcluirDestino_Click" IsEnabled="False"/>
+                        <Button x:Name="btnAlterarDestino" Content="ALTERAR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30" Click="btnAlterarDestino_Click" IsEnabled="False"/>
                     </Grid>
                     <!-- LINHA 4-->
 
@@ -213,9 +213,9 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="bntIncluirFunc" Content="INCLUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80" Click="bntIncluirFunc_Click"></Button>
-                        <Button x:Name="btnExcluirFunc" Content="EXLCUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30" Click="btnExcluirFunc_Click"></Button>
-                        <Button x:Name="btnAlterarFunc" Content="ALTERAR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30" Click="btnAlterarFunc_Click"></Button>
+                        <Button x:Name="btnIncluirFunc" Content="INCLUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80" Click="bntIncluirFunc_Click" IsEnabled="False"></Button>
+                        <Button x:Name="btnExcluirFunc" Content="EXLCUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30" Click="btnExcluirFunc_Click" IsEnabled="False"></Button>
+                        <Button x:Name="btnAlterarFunc" Content="ALTERAR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30" Click="btnAlterarFunc_Click" IsEnabled="False"></Button>
                     </Grid>
                     <!-- LINHA 3-->
 
