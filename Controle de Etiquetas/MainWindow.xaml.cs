@@ -105,11 +105,6 @@ namespace Controle_de_Etiquetas {
 
         }
 
-        private void btnPreImp_Click(object sender, RoutedEventArgs e) {
-            // Chama método que imprime a etiqueta
-            ImprimirEtq(impPre);
-        }
-
         private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e) {
             var t = (TextBox) sender;
             var filter = t.Text;
@@ -158,66 +153,16 @@ namespace Controle_de_Etiquetas {
             AlterarFuncionario();
         }
 
-        private void btnPreAtu_Click(object sender, RoutedEventArgs e) {
-            CarregaCombos();
-        }
-
         private void tbCodCod_TextChanged(object sender, TextChangedEventArgs e) {
 
             // Verifica se texto não está em branco
             if (!string.IsNullOrEmpty(tbCodCod.Text)) {
 
                 // Envia texto para o método que vai gerar o código de barras
-                GeraBarCode(tbCodCod.Text, 1);
+                GeraBarCode(tbCodCod.Text);
 
             }
 
-        }
-
-        private void cbFunc_DropDownClosed(object sender, EventArgs e) {
-
-            // Gero novo objeto de acesso ao banco de dados
-            var objDB = new DatabaseHelper();
-
-            // Gero novo comando SQL
-            var SQL = string.Format("SELECT id FROM dados.funcionario WHERE c_funcionario = '{0}'", cbFunc.Text);
-
-            // Executo SQL salvando resultado na variável
-            CodFunc = objDB.ExecuteScalar(SQL).PadLeft(4, '0');
-
-            // Faço junção dos textos
-            var CodigoBarras = CodFunc + CodDest;
-
-            // Se a string não for nula
-            if (!string.IsNullOrEmpty(CodigoBarras)) {
-
-                // Chamo rotina de gerar o código de barras
-                GeraBarCode(CodigoBarras, 2);
-
-            }
-        }
-
-        private void cbDestino_DropDownClosed(object sender, EventArgs e) {
-
-            // Gero novo objeto de acesso ao banco de dados
-            var objDB = new DatabaseHelper();
-
-            // REdefinno comando SQL
-            var SQL = string.Format("SELECT id FROM dados.destino WHERE c_nome = '{0}'", cbDestino.Text);
-
-            // Executo SQL salvando resultado na variável
-            CodDest = objDB.ExecuteScalar(SQL).PadLeft(5, '0');
-
-            // Faço junção dos textos
-            var CodigoBarras = CodFunc + CodDest;
-
-            // Se a string não for nula
-            if (!string.IsNullOrEmpty(CodigoBarras)) {
-
-                // Chamo rotina de gerar o código de barras
-                GeraBarCode(CodigoBarras, 2);
-
-            }
         }
 
         private void Window_Closed(object sender, EventArgs e) {
@@ -243,10 +188,6 @@ namespace Controle_de_Etiquetas {
 
         // Defino variável de controle da Thread
         public bool NeedStop;
-
-        private string CodFunc;
-
-        private string CodDest;
 
         #endregion Variaveis
 
@@ -648,7 +589,7 @@ namespace Controle_de_Etiquetas {
             }
         }
 
-        private void GeraBarCode(string texto, int tipo) {
+        private void GeraBarCode(string texto) {
 
             var barcode = new Barcode {
                 IncludeLabel = true,
@@ -669,57 +610,7 @@ namespace Controle_de_Etiquetas {
             bi.StreamSource = ms;
             bi.EndInit();
 
-            switch (tipo) {
-
-                case 1:
-                    imgCodCod.Source = bi;
-                    break;
-                case 2:
-                    imgPre.Source = bi;
-                    break;
-            }
-
-        }
-
-        /// <summary>
-        ///     Método responsáel por carregar os combos de funcionários e destino com os respectivos valores
-        /// </summary>
-        private void CarregaCombos() {
-
-            // Limpa valores atuais
-            cbFunc.Items.Clear();
-            cbDestino.Items.Clear();
-
-            // Cria novo objeto de acesso ao banco de dados
-            var objDB = new DatabaseHelper();
-
-            // Cria comando SQL
-            var SQL = "SELECT c_funcionario FROM dados.funcionario WHERE b_deletado = false";
-
-            // Executo SQL salvando resultado na variável result
-            var result = objDB.GetDataTable(SQL);
-
-            // Para cada linha do DataTable
-            foreach (DataRow row in result.Rows) {
-
-                // Adiciona o nome do funcionário na lista
-                cbFunc.Items.Add(row["c_funcionario"].ToString());
-
-            }
-
-            // Redefino o SQL para popular o destino
-            SQL = "SELECT c_nomefantas FROM dados.cliente WHERE b_deletado = false";
-
-            // Executo SQL salvando resultado na variável result
-            result = objDB.GetDataTable(SQL);
-
-            // Para cada linha do DataTable
-            foreach (DataRow row in result.Rows) {
-
-                // Adiciona o nome do funcionário na lista
-                cbDestino.Items.Add(row["c_nomefantas"].ToString());
-
-            }
+            imgCodCod.Source = bi;
 
         }
 
