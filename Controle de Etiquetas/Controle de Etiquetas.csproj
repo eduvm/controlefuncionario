@@ -96,6 +96,8 @@
     </Compile>
     <Compile Include="Clientes\Cliente.cs" />
     <Compile Include="Clientes\ListaClientes.cs" />
+    <Compile Include="Controles\Controle.cs" />
+    <Compile Include="Controles\ListaControles.cs" />
     <Compile Include="Conversores\CvBarCode.cs" />
     <Compile Include="Funcionarios\Funcionario.cs" />
     <Compile Include="Funcionarios\ListaFuncionarios.cs" />
