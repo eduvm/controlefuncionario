@@ -94,29 +94,6 @@ namespace Controle_de_Etiquetas {
 
         #endregion Construtores
 
-        private void btnCodImp_Click(object sender, RoutedEventArgs e) {
-
-            // Chama método que imprime a etiqueta
-            ImprimirEtq(impCod);
-
-        }
-
-        private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e) {
-            var t = (TextBox) sender;
-            var filter = t.Text;
-            var cv = CollectionViewSource.GetDefaultView(dgClientes.ItemsSource);
-
-            if (filter == "") {
-                cv.Filter = null;
-            }
-            else {
-                cv.Filter = o => {
-                    var p = o as Cliente;
-                    return (p.NomeFantasia.ToUpper().StartsWith(filter.ToUpper()));
-                };
-            }
-        }
-
         #region Botões
 
         private void btnCadDestino_Click(object sender, RoutedEventArgs e) {
@@ -164,6 +141,34 @@ namespace Controle_de_Etiquetas {
         private void Window_Closed(object sender, EventArgs e) {
             // Seta valor do controle para parar a thread
             NeedStop = true;
+        }
+
+        private void btnCodImp_Click(object sender, RoutedEventArgs e)
+        {
+
+            // Chama método que imprime a etiqueta
+            ImprimirEtq(impCod);
+
+        }
+
+        private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var t = (TextBox)sender;
+            var filter = t.Text;
+            var cv = CollectionViewSource.GetDefaultView(dgClientes.ItemsSource);
+
+            if (filter == "")
+            {
+                cv.Filter = null;
+            }
+            else
+            {
+                cv.Filter = o =>
+                {
+                    var p = o as Cliente;
+                    return (p.NomeFantasia.ToUpper().StartsWith(filter.ToUpper()));
+                };
+            }
         }
 
         #endregion Botões
