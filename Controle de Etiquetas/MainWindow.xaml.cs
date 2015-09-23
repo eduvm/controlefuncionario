@@ -307,7 +307,7 @@ namespace Controle_de_Etiquetas {
                 var objCarregaControle = new DatabaseHelper();
 
                 // Comando SQL
-                var SQL = "SELECT id, c_nomefuncionario, i_funcionario_id, c_nomecliente, i_cliente_id, d_data_saida, t_hora_saida, d_data_chegada, t_hora_chegada, b_fechado FROM dados.entradas WHERE b_deletado = false ORDER BY id";
+                var SQL = "SELECT id, c_nomefuncionario, i_funcionario_id, c_nomecliente, i_cliente_id, to_char(d_data_saida, 'dd/MM/yyyy') AS d_data_saida, t_hora_saida, to_char(d_data_chegada, 'dd/MM/yyyy') AS d_data_chegada, t_hora_chegada, b_fechado FROM dados.entradas WHERE b_deletado = false ORDER BY id";
 
                 // Pega DataTable com resultado do SQL
                 var dtResult = objCarregaControle.GetDataTable(SQL);
@@ -321,7 +321,7 @@ namespace Controle_de_Etiquetas {
                         Id = row["id"].ToString(),
                         NomeFuncionario = row["c_nomefuncionario"].ToString(),
                         IdFuncionario = row["i_funcionario_id"].ToString(),
-                        NomeCliente = row["i_cliente_id"].ToString(),
+                        NomeCliente = row["c_nomecliente"].ToString(),
                         IdCliente = row["i_cliente_id"].ToString(),
                         DataSaida = row["d_data_saida"].ToString(),
                         HoraSaida = row["t_hora_saida"].ToString(),
@@ -340,7 +340,7 @@ namespace Controle_de_Etiquetas {
 
             catch (Exception fail) {
                 // Seta mensagem de erro
-                var error = "O seguinte erro ocorreu:\n\n";
+                var error = "Erro ao carregar controle:\n\n";
 
                 // Anexa mensagem de erro na mensagem
                 error += fail.Message + "\n\n";
