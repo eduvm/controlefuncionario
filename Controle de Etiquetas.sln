@@ -6,15 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controle de Etiquetas", "Controle de Etiquetas\Controle de Etiquetas.csproj", "{14A39DCF-832F-4004-8257-7741287492FE}"
 EndProject
 Global
-	GlobalSection(AutomaticVersions) = postSolution
-		AssemblyInfoFilePath = Properties\AssemblyInfo.cs
-		UpdateAssemblyVersion = True
-		UpdateAssemblyFileVersion = True
-		UpdateAssemblyInfoVersion = True
-		AssemblyVersionSettings = None.None.DeltaDayStamp.Increment
-		AssemblyFileVersionSettings = None.None.DeltaDayStamp.Increment
-		AssemblyInfoVersionSettings = None.None.DeltaDayStamp.Increment
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
