@@ -312,7 +312,7 @@ namespace Controle_de_Etiquetas {
                 var objCarregaControle = new DatabaseHelper();
 
                 // Comando SQL
-                var SQL = "SELECT id, c_nomefuncionario, i_funcionario_id, c_nomecliente, i_cliente_id, to_char(d_data_saida, 'dd/MM/yyyy') AS d_data_saida, t_hora_saida, to_char(d_data_chegada, 'dd/MM/yyyy') AS d_data_chegada, t_hora_chegada, b_fechado FROM dados.entradas WHERE b_deletado = false ORDER BY id";
+                var SQL = "SELECT id, c_nomefuncionario, i_funcionario_id, c_nomecliente, i_cliente_id, to_char(d_data_saida, 'dd/MM/yyyy') AS d_data_saida, t_hora_saida, to_char(d_data_chegada, 'dd/MM/yyyy') AS d_data_chegada, t_hora_chegada, b_fechado FROM dados.entradas WHERE b_deletado = false ORDER BY d_data_saida, t_hora_saida DESC";
 
                 // Pega DataTable com resultado do SQL
                 var dtResult = objCarregaControle.GetDataTable(SQL);
