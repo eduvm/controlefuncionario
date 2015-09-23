@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Printing;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -440,29 +441,42 @@ namespace Controle_de_Etiquetas {
                             // Verifico se o código do funcionário está vazrio
                             if (string.IsNullOrEmpty(EscutaControle.CodFuncionario)) {
 
-                                var dbResult = RetornaFuncionario(Mensagem);
+                                // Verifica se a mensagem retornada é um código númerico
+                                if (Regex.IsMatch(Mensagem, @"^\d+$")) {
 
-                                // Verifico se existe o funcionario com o código da mensagem
-                                if (string.IsNullOrEmpty(dbResult)) {
+                                    var dbResult = RetornaFuncionario(Mensagem);
 
-                                    // Apresento mensagem de que não reconheceu o funcionário
-                                    MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+                                    // Verifico se existe o funcionario com o código da mensagem
+                                    if (string.IsNullOrEmpty(dbResult)) {
+
+                                        // Apresento mensagem de que não reconheceu o funcionário
+                                        MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+
+                                    }
+
+                                    // Se conseguiu encontrar o funcionário
+                                    else {
+
+                                        // Grava código do funcionário no objeto
+                                        EscutaControle.CodFuncionario = Mensagem;
+
+                                        Dispatcher.Invoke(() => {
+
+                                            // Apresenta mensagem de informação
+                                            tbInformação.Text = "Funcionário: " + dbResult;
+
+                                        });
+                                        ;
+
+                                    }
 
                                 }
 
-                                // Se conseguiu encontrar o funcionário
+                                // Se ela não for um código numérico
                                 else {
 
-                                    // Grava código do funcionário no objeto
-                                    EscutaControle.CodFuncionario = Mensagem;
-
-                                    Dispatcher.Invoke(() => {
-
-                                        // Apresenta mensagem de informação
-                                        tbInformação.Text = "Funcionário: " + dbResult;
-
-                                    });
-                                    ;
+                                    // Apresento mensagem de que não reconheceu o funcionário
+                                    MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
 
                                 }
 
