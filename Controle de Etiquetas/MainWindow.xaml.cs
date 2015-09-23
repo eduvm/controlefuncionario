@@ -455,13 +455,14 @@ namespace Controle_de_Etiquetas {
 
                                     // Grava código do funcionário no objeto
                                     EscutaControle.CodFuncionario = Mensagem;
-                                        
+
                                     Dispatcher.Invoke(() => {
 
                                         // Apresenta mensagem de informação
                                         tbInformação.Text = "Funcionário: " + dbResult;
 
-                                    });;
+                                    });
+                                    ;
 
                                 }
 
@@ -509,22 +510,7 @@ namespace Controle_de_Etiquetas {
 
                                         }
 
-                                        // Devo limpar o objeto
-                                        Dispatcher.Invoke(() => {
-
-                                            // Limpa o objeto para ser usado novamente
-                                            EscutaControle.CodFinal = null;
-                                            EscutaControle.CodFuncionario = null;
-                                            EscutaControle.CodigoInicial = null;
-                                            EscutaControle.Clear();
-
-                                            // Define objeto EscutaControle como novo ItemsSource
-                                            CarregaControle();
-
-                                            // Apresenta mensagem de informação
-                                            tbInformação.Text = "Cadastro finalizado";
-
-                                        });
+                                        LimpaObjeto();
 
                                         break;
                                     }
@@ -532,13 +518,13 @@ namespace Controle_de_Etiquetas {
                                     case CodRetorno: {
 
                                         // Gero novo objeto de acesso ao banco de dados
-                                        DatabaseHelper objDB = new DatabaseHelper();
+                                        var objDB = new DatabaseHelper();
 
                                         // Gero novo comando SQL
-                                        string SQL = String.Format("SELECT id FROM dados.entradas WHERE i_funcionario_id = '{0}' AND b_fechado = false",EscutaControle.CodFuncionario);
+                                        var SQL = string.Format("SELECT id FROM dados.entradas WHERE i_funcionario_id = '{0}' AND b_fechado = false", EscutaControle.CodFuncionario);
 
                                         // Salvo resultado do SQL em um datatable
-                                        DataTable dtResult = objDB.GetDataTable(SQL);
+                                        var dtResult = objDB.GetDataTable(SQL);
 
                                         // Defino data de saída
                                         var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
@@ -550,34 +536,32 @@ namespace Controle_de_Etiquetas {
                                         foreach (DataRow row in dtResult.Rows) {
 
                                             // Defino novo dicionario com campo/valor
-                                            Dictionary<string,string> dctDados = new Dictionary<string, string>();
+                                            var dctDados = new Dictionary<string, string>();
 
                                             // Adiciono campos no dicionario
-                                            dctDados.Add("d_data_chegada",dtDataRetorno);
+                                            dctDados.Add("d_data_chegada", dtDataRetorno);
                                             dctDados.Add("t_hora_chegada", dtHoraRetorno);
                                             dctDados.Add("b_fechado", "true");
 
                                             // Tenta atualizar os registros
-                                            if (!objDB.Update("entradas",dctDados,"id = " + row["id"])) {
+                                            if (!objDB.Update("entradas", dctDados, "id = " + row["id"])) {
 
                                                 MessageBox.Show("Ocorreu um erro ao tentar fechar as saídas");
-                                                
+
                                             }
 
                                         }
 
-                                        // Devo limpar e recarregar o Grid de Controle
-                                        Dispatcher.Invoke(() =>
-                                        {
+                                        // Executa rotina para limpar o objeto
+                                        LimpaObjeto();
 
-                                            // Define objeto EscutaControle como novo ItemsSource
-                                            CarregaControle();
+                                        // Devo limpar e recarregar o Grid de Controle
+                                        Dispatcher.Invoke(() => {
 
                                             // Apresenta mensagem de informação
                                             tbInformação.Text = "Gravado retorno";
 
                                         });
-
 
                                         break;
                                     }
@@ -670,6 +654,26 @@ namespace Controle_de_Etiquetas {
                 // Finaliza a escuta
                 tcpServidor.Stop();
             }
+        }
+
+        private void LimpaObjeto() {
+
+            // Devo limpar o objeto
+            Dispatcher.Invoke(() => {
+
+                // Limpa o objeto para ser usado novamente
+                EscutaControle.CodFinal = null;
+                EscutaControle.CodFuncionario = null;
+                EscutaControle.CodigoInicial = null;
+                EscutaControle.Clear();
+
+                // Define objeto EscutaControle como novo ItemsSource
+                CarregaControle();
+
+                // Apresenta mensagem de informação
+                tbInformação.Text = "Cadastro finalizado";
+
+            });
         }
 
         private static string RetornaFuncionario(string CodFunc) {
