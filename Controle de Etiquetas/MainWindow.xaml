@@ -8,7 +8,7 @@
     xmlns:conversores="clr-namespace:Controle_de_Etiquetas.Conversores"
     x:Class="Controle_de_Etiquetas.MainWindow"
     mc:Ignorable="d"
-    Title="MainWindow" Height="582.5" Width="933" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
+    Title="MainWindow" Height="600" Width="1024" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -70,16 +70,19 @@
 
                             <Grid Margin="5">
                                 <TextBlock Text="ID:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,3,0,0" />
-                                <TextBox x:Name="tbId" Margin="19,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="82" Text="{Binding SelectedItem.id, ElementName=dgControle}" />
-                                <TextBlock Text="DATA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="196,3,0,0" />
-                                <TextBox x:Name="tbData" Margin="234,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="119" Text="{Binding SelectedItem.d_data, ElementName=dgControle, StringFormat=\{0:dd/MM/yyyy\}}" />
-                                <TextBlock Text="HORA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="435,3,0,0" />
-                                <TextBox x:Name="tbHora" Margin="473,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="108" Text="{Binding SelectedItem.t_hora, ElementName=dgControle}" />
+                                <TextBox x:Name="tbId" Margin="19,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Text="{Binding SelectedItem.Id, ElementName=dgControle}" />
+                                <TextBlock Text="DATA SAÍDA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,3,0,0" />
+                                <TextBox x:Name="tbDataSaida" Margin="169,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="88" Text="{Binding SelectedItem.DataSaida, ElementName=dgControle}" />
+                                <TextBlock Text="HORA SAÍDA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="262,3,0,0" />
+                                <TextBox x:Name="tbHoraSaida" Margin="339,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Text="{Binding SelectedItem.HoraSaida, ElementName=dgControle}" />
+                                <TextBlock Text="DATA CHEGADA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="415,3,0,0" />
+                                <TextBox x:Name="tbDataChegaday" Margin="511,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="88" Text="{Binding SelectedItem.DataChegada, ElementName=dgControle}" />
+                                <TextBlock Text="HORA CHEGADA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="609,3,0,0" />
+                                <TextBox x:Name="tbHoraChegada" Margin="707,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Text="{Binding SelectedItem.HoraChegada, ElementName=dgControle}" />
                                 <TextBlock Text="FUNCIONÁRIO:" FontSize="12" Margin="0,30,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                                <TextBox x:Name="tbFuncionario" Margin="86,27,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.n_id_funcionario, ElementName=dgControle}" />
-                                <TextBlock Text="DESTINO:" FontSize="12" Margin="0,57,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                                <TextBox x:Name="tbDestino" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="86,54,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.n_id_destino, ElementName=dgControle}" />
-
+                                <TextBox x:Name="tbFuncionario" Margin="86,27,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.NomeFuncionario, ElementName=dgControle}" />
+                                <TextBlock Text="CLIENTE:" FontSize="12" Margin="0,57,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                                <TextBox x:Name="tbCliente" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="86,54,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.NomeCliente, ElementName=dgControle}" />
                             </Grid>
 
                         </GroupBox>
@@ -100,11 +103,15 @@
 
                         <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Width="24" Binding="{Binding id}" />
-                                <DataGridTextColumn Header="FUNCIONARIO" Width="250" Binding="{Binding n_id_funcionario}" />
-                                <DataGridTextColumn Header="DATA" Width="80" Binding="{Binding d_data}" />
-                                <DataGridTextColumn Header="HORA" Width="60" Binding="{Binding t_hora}" />
-                                <DataGridTextColumn Header="DESTINO" Width="*" Binding="{Binding n_id_destino}" />
+                                <DataGridTextColumn Header="ID" Width="24" Binding="{Binding Id}" />
+                                <DataGridTextColumn Header="FUNCIONÁRIO" Binding="{Binding NomeFuncionario}" />
+                                <DataGridTextColumn Header="FUNC. ID" Binding="{Binding IdFuncionario}" />
+                                <DataGridTextColumn Header="CLIENTE" Binding="{Binding NomeCliente}" />
+                                <DataGridTextColumn Header="ID CLIENTE" Binding="{Binding IdCliente}" />
+                                <DataGridTextColumn Header="DATA SAÍDA" Binding="{Binding DataSaida}" />
+                                <DataGridTextColumn Header="HORA SAÍDA" Binding="{Binding HoraSaida}" />
+                                <DataGridTextColumn Header="DATA CHEGADA" Binding="{Binding DataChegada}" />
+                                <DataGridTextColumn Header="HORA CHEGADA" Binding="{Binding HoraChegada}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -244,7 +251,7 @@
                         </GroupBox>
                         <Button x:Name="btnCodImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12" Click="btnCodImp_Click"></Button>
                     </Grid>
-                    
+
 
 
                 </Grid>
