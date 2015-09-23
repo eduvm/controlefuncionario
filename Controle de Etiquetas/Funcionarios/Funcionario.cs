@@ -1,4 +1,4 @@
-﻿namespace Controle_de_Etiquetas.Funcionario {
+﻿namespace Controle_de_Etiquetas.Funcionarios {
 
     public class Funcionario {
 

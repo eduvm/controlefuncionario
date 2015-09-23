@@ -29,7 +29,7 @@ using BarcodeLib;
 
 using Controle_de_Etiquetas.Clientes;
 using Controle_de_Etiquetas.Controles;
-using Controle_de_Etiquetas.Funcionario;
+using Controle_de_Etiquetas.Funcionarios;
 using Controle_de_Etiquetas.Helpers;
 
 #endregion
@@ -221,7 +221,7 @@ namespace Controle_de_Etiquetas {
 
                 // Faz for para preencher a lista de pessoas
                 foreach (DataRow row in dt.Rows) {
-                    lFuncionarios.Add(new Funcionario.Funcionario {
+                    lFuncionarios.Add(new Funcionario {
                         Id = row["id"].ToString(),
                         Nome = row["c_nome"].ToString(),
                         BarCode = row["id"].ToString()
