@@ -1,11 +1,11 @@
-﻿<Window x:Class="Controle_de_Etiquetas.CadDestino"
+﻿<Window x:Class="Controle_de_Etiquetas.CadCliente"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Controle_de_Etiquetas"
         mc:Ignorable="d"
-        Title="Cadastro de Destino" Height="161.911" Width="482.255" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Cadastro de Destino" Height="182.911" Width="557.255" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,9 +28,12 @@
 
                 <Grid Row="1" Margin="0,0,0,5">
 
+                    <TextBlock Text="Cpd:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0" />
+                    <TextBox x:Name="tbCpdCli" Width="433" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="86,8,0,0" />
 
-                    <TextBlock Text="Destino:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0" />
-                    <TextBox x:Name="tbDestino" Width="394" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="48,8,0,0" />
+                    <TextBlock Text="Nome Fantasia:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,37,0,0" />
+                    <TextBox x:Name="tbNomeFantasia" Width="433" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="86,35,0,0" />
+
                 </Grid>
             </Grid>
         </GroupBox>
