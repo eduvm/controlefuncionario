@@ -1,14 +1,10 @@
-﻿#region Header
-
-// Criado por eduvm
-// Data: 19/09/2015
+﻿// Criado por eduardo
+// Data: 21/09/2015
 // Solução: Controle de Etiquetas
-// Projeto: Controle de Etiquetas
+// Projeto:Controle de Etiquetas
 // Arquivo: MainWindow.xaml.cs
 // =========================================
-// Última alteração: 20/09/2015
-
-#endregion
+// Última alteração: 23/09/2015
 
 #region Usings
 
@@ -32,6 +28,7 @@ using System.Windows.Media.Imaging;
 using BarcodeLib;
 
 using Controle_de_Etiquetas.Clientes;
+using Controle_de_Etiquetas.Controles;
 using Controle_de_Etiquetas.Funcionario;
 using Controle_de_Etiquetas.Helpers;
 
@@ -50,14 +47,13 @@ namespace Controle_de_Etiquetas {
             InitializeComponent();
 
             // Cria nova instancia da janela de atualização de cliente
-            ImportarClientes WinImport = new ImportarClientes();
+            var WinImport = new ImportarClientes();
 
             // Mostra janela como Dialog
             WinImport.ShowDialog();
 
             // Recebe todos os argumentos recebidos
-            string[] args = Environment.GetCommandLineArgs();
-
+            var args = Environment.GetCommandLineArgs();
 
             // Verificase deve habilitar os botões de inclusão
             if (!string.IsNullOrEmpty(args[0]) && args[0] == "dev") {
@@ -301,17 +297,40 @@ namespace Controle_de_Etiquetas {
             dgControle.ItemsSource = null;
 
             try {
+
                 // Cria objeto de acesso ao banco de dados
                 var objCarregaControle = new DatabaseHelper();
 
                 // Comando SQL
-                var SQL = "SELECT id, n_id_funcionario, d_data, t_hora, n_id_destino  FROM dados.entradas WHERE b_deletado = false ORDER BY id";
+                var SQL = "SELECT id, c_nomefuncionario, i_funcionario_id, c_nomecliente, i_cliente_id, d_data_saida, t_hora_saida, d_data_chegada, t_hora_chegada, b_fechado FROM dados.entradas WHERE b_deletado = false ORDER BY id";
 
                 // Pega DataTable com resultado do SQL
-                var result = objCarregaControle.GetDataTable(SQL);
+                var dtResult = objCarregaControle.GetDataTable(SQL);
 
-                // Seta item source do DataGrid
-                dgControle.ItemsSource = result.DefaultView;
+                // Gera nova lista de clientes
+                var lControle = new ListaControles();
+
+                // Cria laço para preencher a lista de controles
+                foreach (DataRow row in dtResult.Rows) {
+                    lControle.Add(new Controle {
+                        Id = row["id"].ToString(),
+                        NomeFuncionario = row["c_nomefuncionario"].ToString(),
+                        IdFuncionario = row["i_funcionario_id"].ToString(),
+                        NomeCliente = row["i_cliente_id"].ToString(),
+                        IdCliente = row["i_cliente_id"].ToString(),
+                        DataSaida = row["d_data_saida"].ToString(),
+                        HoraSaida = row["t_hora_saida"].ToString(),
+                        DataChegada = row["d_data_chegada"].ToString(),
+                        HoraChegada = row["t_hora_chegada"].ToString(),
+                        FlagFechado = Convert.ToBoolean(row["b_fechado"])
+
+                    });
+
+                }
+
+                // Define o item source do grid de controle
+                dgControle.ItemsSource = lControle;
+
             }
 
             catch (Exception fail) {
@@ -455,8 +474,8 @@ namespace Controle_de_Etiquetas {
             else {
 
                 // Gero objeto cliente com os dados do cliente selecionado
-                Cliente objCLiente = (Cliente) dgClientes.SelectedItem;
-                
+                var objCLiente = (Cliente) dgClientes.SelectedItem;
+
                 // Defino valor da coluna id
                 var strId = objCLiente.Id;
 
@@ -496,7 +515,7 @@ namespace Controle_de_Etiquetas {
             else {
 
                 // Defino novo objeto Funcionario com o registro selecionado
-                Cliente selecionado = (Cliente)dgClientes.SelectedItem;
+                var selecionado = (Cliente) dgClientes.SelectedItem;
 
                 // Gravo na variável o Id do usuário selecionado
                 var strId = selecionado.Id;

@@ -8,7 +8,7 @@
     xmlns:conversores="clr-namespace:Controle_de_Etiquetas.Conversores"
     x:Class="Controle_de_Etiquetas.MainWindow"
     mc:Ignorable="d"
-    Title="MainWindow" Height="582.5" Width="933" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
+    Title="MainWindow" Height="600" Width="1024" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -100,11 +100,15 @@
 
                         <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Width="24" Binding="{Binding id}" />
-                                <DataGridTextColumn Header="FUNCIONARIO" Width="250" Binding="{Binding n_id_funcionario}" />
-                                <DataGridTextColumn Header="DATA" Width="80" Binding="{Binding d_data}" />
-                                <DataGridTextColumn Header="HORA" Width="60" Binding="{Binding t_hora}" />
-                                <DataGridTextColumn Header="DESTINO" Width="*" Binding="{Binding n_id_destino}" />
+                                <DataGridTextColumn Header="ID" Width="24" Binding="{Binding Id}" />
+                                <DataGridTextColumn Header="FUNCIONÁRIO" Binding="{Binding NomeFuncionario}" />
+                                <DataGridTextColumn Header="FUNC. ID" Binding="{Binding IdFuncionario}" />
+                                <DataGridTextColumn Header="CLIENTE" Binding="{Binding NomeCLiente}" />
+                                <DataGridTextColumn Header="ID CLIENTE" Binding="{Binding IdCliente}" />
+                                <DataGridTextColumn Header="DATA SAÍDA" Binding="{Binding DataSaida}" />
+                                <DataGridTextColumn Header="HORA SAÍDA" Binding="{Binding HoraSaida}" />
+                                <DataGridTextColumn Header="DATA CHEGADA" Binding="{Binding DataChegada}" />
+                                <DataGridTextColumn Header="HORA CHEGADA" Binding="{Binding HoraChegada}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
