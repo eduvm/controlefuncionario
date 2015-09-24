@@ -23,6 +23,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -46,6 +47,8 @@ namespace Controle_de_Etiquetas {
         public MainWindow() {
             // Inicializa os componentes da janela
             InitializeComponent();
+
+            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
 
             // Cria nova instancia da janela de atualização de cliente
             var WinImport = new ImportarClientes();
@@ -91,7 +94,35 @@ namespace Controle_de_Etiquetas {
 
             // Inicia a Thread
             MinhaThread.Start();
+
+            
         }
+
+        void CompositionTarget_Rendering(object sender, EventArgs e) {
+
+            if ((Keyboard.GetKeyStates(Key.Enter) & KeyStates.Down) > 0) {
+
+                if (editando == false) {
+
+                    //editando = (editando) ? false : true;
+                    Leitor.Focus();
+
+                    editando = true;
+
+                }
+                else {
+
+                    IncluirLeitor(Leitor.Text);
+
+                    editando = false;
+
+                    Leitor.Text = "";
+
+                }
+
+            }
+
+        } 
 
         #endregion Construtores
 
@@ -194,6 +225,8 @@ namespace Controle_de_Etiquetas {
         private const string CodFim = "FINALIZA";
 
         private const string CodRetorno = "RETORNO";
+
+        private bool editando = false;
 
         #endregion Variaveis
 
@@ -354,6 +387,253 @@ namespace Controle_de_Etiquetas {
                 MessageBox.Show(error);
 
             }
+        }
+
+        private void IncluirLeitor(string Mensagem) {
+
+            // Verifica se é a mensagem de iniciar o objeto
+            if (string.IsNullOrEmpty(EscutaControle.CodigoInicial)) {
+
+                if (Mensagem != CodIni) {
+
+                    // Apresenta mensagem de erro
+                    MessageBox.Show("Você deve primeiro escanear o código de inicialização");
+
+                }
+                else {
+
+                    // Devo marcar no objeto como iniciado
+                    EscutaControle.CodigoInicial = Mensagem;
+
+                    Dispatcher.Invoke(() => {
+
+                        // Apresenta mensagem de informação
+                        tbInformação.Text = "Iniciada saída:";
+
+                        // Limpa Grid
+                        dgControle.ItemsSource = null;
+
+                        // Define objeto EscutaControle como novo ItemsSource
+                        dgControle.ItemsSource = EscutaControle;
+
+                    });
+
+                }
+
+            }
+
+            // Se o objeto já foi inicializado
+            else {
+
+                // Verifico se o código do funcionário está vazrio
+                if (string.IsNullOrEmpty(EscutaControle.CodFuncionario)) {
+
+                    // Verifica se a mensagem retornada é um código númerico
+                    if (Regex.IsMatch(Mensagem, @"^\d+$")) {
+
+                        var dbResult = RetornaFuncionario(Mensagem);
+
+                        // Verifico se existe o funcionario com o código da mensagem
+                        if (string.IsNullOrEmpty(dbResult)) {
+
+                            // Apresento mensagem de que não reconheceu o funcionário
+                            MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+
+                        }
+
+                        // Se conseguiu encontrar o funcionário
+                        else {
+
+                            // Grava código do funcionário no objeto
+                            EscutaControle.CodFuncionario = Mensagem;
+
+                            Dispatcher.Invoke(() => {
+
+                                // Apresenta mensagem de informação
+                                tbInformação.Text = "Funcionário: " + dbResult;
+
+                            });
+                            ;
+
+                        }
+
+                    }
+
+                    // Se ela não for um código numérico
+                    else {
+
+                        // Apresento mensagem de que não reconheceu o funcionário
+                        MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+
+                    }
+
+                }
+
+                // Se o objeto ja foi inicializado, e o funcionário preenchido
+                // Neste caso, a Mensagem é o codigo do cliente
+                else {
+
+                    switch (Mensagem) {
+
+                        case CodFim: {
+
+                            // Verificose existem registros a serem gravados no banco
+                            if (EscutaControle.Count > 0) {
+
+                                // Gero laço para percorrer a lista de registros
+
+                                foreach (var iControle in EscutaControle) {
+
+                                    // Crio objeto de acesso ao banco de dados
+                                    var objDB = new DatabaseHelper();
+
+                                    // Crio Dicionario que vai conter os campos  e valores
+                                    var dctDados = new Dictionary<string, string>();
+
+                                    // Adiciono dados no dicionario
+                                    dctDados.Add("c_nomefuncionario", iControle.NomeFuncionario);
+                                    dctDados.Add("i_funcionario_id", iControle.IdFuncionario);
+                                    dctDados.Add("c_nomecliente", iControle.NomeCliente);
+                                    dctDados.Add("i_cliente_id", iControle.IdCliente);
+                                    dctDados.Add("d_data_saida", iControle.DataSaida);
+                                    dctDados.Add("t_hora_saida", iControle.HoraSaida);
+                                    dctDados.Add("b_fechado", iControle.FlagFechado.ToString());
+
+                                    // Verifico se não consseguir incluir os dados no banco
+                                    if (!objDB.Insert("dados.entradas", dctDados)) {
+
+                                        // Apresenta mensagem de erro
+                                        MessageBox.Show("Ocorreu um erro ao tentar adicionar o registro");
+
+                                    }
+
+                                }
+
+                            }
+
+                            LimpaObjeto();
+
+                            break;
+                        }
+
+                        case CodRetorno: {
+
+                            // Gero novo objeto de acesso ao banco de dados
+                            var objDB = new DatabaseHelper();
+
+                            // Gero novo comando SQL
+                            var SQL = string.Format("SELECT id FROM dados.entradas WHERE i_funcionario_id = '{0}' AND b_fechado = false", EscutaControle.CodFuncionario);
+
+                            // Salvo resultado do SQL em um datatable
+                            var dtResult = objDB.GetDataTable(SQL);
+
+                            // Defino data de saída
+                            var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
+
+                            // Defino hora de saída
+                            var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+
+                            // Crio laço para rodar em cada resultado
+                            foreach (DataRow row in dtResult.Rows) {
+
+                                // Defino novo dicionario com campo/valor
+                                var dctDados = new Dictionary<string, string>();
+
+                                // Adiciono campos no dicionario
+                                dctDados.Add("d_data_chegada", dtDataRetorno);
+                                dctDados.Add("t_hora_chegada", dtHoraRetorno);
+                                dctDados.Add("b_fechado", "true");
+
+                                // Tenta atualizar os registros
+                                if (!objDB.Update("entradas", dctDados, "id = " + row["id"])) {
+
+                                    MessageBox.Show("Ocorreu um erro ao tentar fechar as saídas");
+
+                                }
+
+                            }
+
+                            // Executa rotina para limpar o objeto
+                            LimpaObjeto();
+
+                            // Devo limpar e recarregar o Grid de Controle
+                            Dispatcher.Invoke(() => {
+
+                                // Apresenta mensagem de informação
+                                tbInformação.Text = "Gravado retorno";
+
+                            });
+
+                            break;
+                        }
+
+                        default: {
+
+                            // Carrego nome do cliente
+                            var dbResult = RetornaCliente(Mensagem);
+
+                            // Verifico se o cliente existe
+                            if (string.IsNullOrEmpty(dbResult)) {
+
+                                // Apresento mensagem de que não existe o cliente
+                                MessageBox.Show("Não foi possível localizar o cliente com o código :" + Mensagem);
+
+                            }
+
+                            // Se conseguir encontrar o cliente
+                            else {
+
+                                // Crio novo objeto controle
+                                var ctrTemp = new Controle();
+
+                                // Defino ID
+                                ctrTemp.Id = "*";
+
+                                // Defino funcionario com o funcionário atual
+                                ctrTemp.IdFuncionario = EscutaControle.CodFuncionario;
+
+                                // Defino nome do funcionario
+                                ctrTemp.NomeFuncionario = RetornaFuncionario(EscutaControle.CodFuncionario);
+
+                                // Defino código do cliente
+                                ctrTemp.IdCliente = Mensagem;
+
+                                // Defino nome do cliente
+                                ctrTemp.NomeCliente = RetornaCliente(Mensagem);
+
+                                // Defino data de saída
+                                ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
+
+                                // Defino hora de saída
+                                ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+
+                                // Defino flag como aberto
+                                ctrTemp.FlagFechado = false;
+
+                                Dispatcher.Invoke(() => {
+
+                                    // Adiciono o objeto na lista de objetos
+                                    EscutaControle.Add(ctrTemp);
+
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                    }
+
+                    // Verifico se devo fechar o registro
+                    if (Mensagem == CodFim) {
+
+                    }
+
+                }
+
+            }
+
         }
 
         private void EscutarConexao() {
