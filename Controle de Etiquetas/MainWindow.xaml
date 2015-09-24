@@ -8,18 +8,8 @@
     xmlns:conversores="clr-namespace:Controle_de_Etiquetas.Conversores"
     x:Class="Controle_de_Etiquetas.MainWindow"
     mc:Ignorable="d"
-    Title="MainWindow" Height="600" Width="1024" WindowStartupLocation="CenterScreen" Closed="Window_Closed">
-
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/TabHeader.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
-            <conversores:CvBarCode x:Key="CvBarCode" />
-        </ResourceDictionary>
-    </Window.Resources>
-
+    Title="MainWindow" Height="600" Width="1024" MinHeight="600" MinWidth="1024" WindowStartupLocation="CenterScreen"
+    Closed="Window_Closed" Loaded="Window_Loaded" Closing="Window_Closing">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -28,20 +18,16 @@
         </Grid.RowDefinitions>
 
         <!--Linha 1-->
-        <Grid Grid.Row="0"></Grid>
+        <Grid Grid.Row="0" >
+
+        </Grid>
         <!--Linha 1-->
 
         <!--Linha 2-->
-        <TabControl TabStripPlacement="Left" Grid.Row="1">
-            <TabControl.Resources>
-                <Style TargetType="{x:Type TabItem}" x:Key="SideBarSectionStyle">
-                    <Setter Property="IsEnabled" Value="False" />
-                    <Setter Property="FontSize" Value="16" />
-                    <Setter Property="Foreground" Value="LightGreen" />
-                </Style>
-            </TabControl.Resources>
-
-            <TabItem Header="CONTROLE" Height="120" FontSize="24" Width="185">
+        <TextBox x:Name="tbLeitor" Grid.Row="1" Margin="0,10,16,0" Panel.ZIndex="10" Height="34" HorizontalAlignment="Right" Width="166" VerticalAlignment="Top" />
+        <TabControl Grid.Row="1" Style="{DynamicResource TabControlStyle1}">
+            <TabItem Header="CONTROLE" FontSize="18.667" Width="185" Style="{DynamicResource TabItem01}"
+                     Background="#FF2585B2" Foreground="Black" FontWeight="Bold">
                 <Grid Margin="5">
 
                     <!--Definições de linhas-->
@@ -60,7 +46,8 @@
 
                     <!--Linha 1-->
                     <Grid Grid.Row="0" Margin="5" Background="#FF2585B2">
-                        <TextBlock x:Name="tbInformação" Text="Aguardando leitor" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White" />
+                        <TextBlock x:Name="tbInformação" Text="Aguardando leitor" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="White" />
                     </Grid>
                     <!--Linha 1-->
 
@@ -69,20 +56,49 @@
                         <GroupBox Header="Detalhes" FontSize="12" Margin="5">
 
                             <Grid Margin="5">
-                                <TextBlock Text="ID:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,3,0,0" />
-                                <TextBox x:Name="tbId" Margin="19,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Text="{Binding SelectedItem.Id, ElementName=dgControle}" />
-                                <TextBlock Text="DATA SAÍDA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,3,0,0" />
-                                <TextBox x:Name="tbDataSaida" Margin="169,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="88" Text="{Binding SelectedItem.DataSaida, ElementName=dgControle}" />
-                                <TextBlock Text="HORA SAÍDA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="262,3,0,0" />
-                                <TextBox x:Name="tbHoraSaida" Margin="339,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Text="{Binding SelectedItem.HoraSaida, ElementName=dgControle}" />
-                                <TextBlock Text="DATA CHEGADA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="415,3,0,0" />
-                                <TextBox x:Name="tbDataChegaday" Margin="511,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="88" Text="{Binding SelectedItem.DataChegada, ElementName=dgControle}" />
-                                <TextBlock Text="HORA CHEGADA:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="609,3,0,0" />
-                                <TextBox x:Name="tbHoraChegada" Margin="707,0,0,0" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Text="{Binding SelectedItem.HoraChegada, ElementName=dgControle}" />
-                                <TextBlock Text="FUNCIONÁRIO:" FontSize="12" Margin="0,30,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                                <TextBox x:Name="tbFuncionario" Margin="86,27,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.NomeFuncionario, ElementName=dgControle}" />
-                                <TextBlock Text="CLIENTE:" FontSize="12" Margin="0,57,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                                <TextBox x:Name="tbCliente" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="86,54,0,0" FontSize="12" VerticalAlignment="Top" Text="{Binding SelectedItem.NomeCliente, ElementName=dgControle}" />
+                                <TextBlock Text="ID:" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Left"
+                                           Margin="0,3,0,0" />
+                                <TextBox x:Name="tbId" Margin="19,0,0,0" FontSize="12" HorizontalAlignment="Left"
+                                         VerticalAlignment="Top" Width="70"
+                                         Text="{Binding SelectedItem.Id, ElementName=dgControle}" IsReadOnly="True"
+                                         Focusable="False" IsTabStop="False" />
+                                <TextBlock Text="DATA SAÍDA:" FontSize="12" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" Margin="97,3,0,0" />
+                                <TextBox x:Name="tbDataSaida" Margin="179,0,0,0" FontSize="12"
+                                         HorizontalAlignment="Left" VerticalAlignment="Top" Width="88"
+                                         Text="{Binding SelectedItem.DataSaida, ElementName=dgControle}"
+                                         IsReadOnly="True" Focusable="False" IsTabStop="False" />
+                                <TextBlock Text="HORA SAÍDA:" FontSize="12" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" Margin="275,3,0,0" />
+                                <TextBox x:Name="tbHoraSaida" Margin="358,0,0,0" FontSize="12"
+                                         HorizontalAlignment="Left" VerticalAlignment="Top" Width="70"
+                                         Text="{Binding SelectedItem.HoraSaida, ElementName=dgControle}"
+                                         IsReadOnly="True" Focusable="False" IsTabStop="False" />
+                                <TextBlock Text="DATA CHEGADA:" FontSize="12" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" Margin="438,3,0,0" />
+                                <TextBox x:Name="tbDataChegaday" Margin="542,0,0,0" FontSize="12"
+                                         HorizontalAlignment="Left" VerticalAlignment="Top" Width="88"
+                                         Text="{Binding SelectedItem.DataChegada, ElementName=dgControle}"
+                                         IsReadOnly="True" Focusable="False" IsTabStop="False" />
+                                <TextBlock Text="HORA CHEGADA:" FontSize="12" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" Margin="639,3,0,0" />
+                                <TextBox x:Name="tbHoraChegada" Margin="744,0,0,0" FontSize="12"
+                                         HorizontalAlignment="Left" VerticalAlignment="Top" Width="70"
+                                         Text="{Binding SelectedItem.HoraChegada, ElementName=dgControle}"
+                                         IsReadOnly="True" Focusable="False" IsTabStop="False" />
+                                <TextBlock Text="FUNCIONÁRIO:" FontSize="12" Margin="0,30,0,0" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" />
+                                <TextBox x:Name="tbFuncionario" Margin="92,27,0,0" FontSize="12"
+                                         VerticalAlignment="Top"
+                                         Text="{Binding SelectedItem.NomeFuncionario, ElementName=dgControle}"
+                                         IsReadOnly="True" Focusable="False" IsTabStop="False" />
+                                <TextBlock Text="CLIENTE:" FontSize="12" Margin="0,57,0,0" VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" />
+                                <TextBox x:Name="tbCliente" TextWrapping="Wrap" AcceptsReturn="True"
+                                         VerticalScrollBarVisibility="Auto" Margin="92,54,0,0" FontSize="12"
+                                         VerticalAlignment="Top"
+                                         Text="{Binding SelectedItem.NomeCliente, ElementName=dgControle}"
+                                         IsReadOnly="True" Focusable="False" IsTabStop="False" />
                             </Grid>
 
                         </GroupBox>
@@ -92,16 +108,22 @@
                     <!--Linha 3-->
                     <Grid Grid.Row="2">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
 
                         <Grid Row="0" Margin="0,0,16,0">
-                            <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Margin="0,0,120,0"></TextBlock>
-                            <TextBox HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="12" Width="115" />
+                            <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Margin="0,8,324,8" />
+                            <ComboBox x:Name="cbTipFilterControle" VerticalAlignment="Top" Margin="0,5,120,0" Width="199" FontSize="12" HorizontalAlignment="Right">
+                                <ComboBoxItem Content="Funcionário" HorizontalAlignment="Left" Width="197" IsSelected="True"/>
+                                <ComboBoxItem Content="Cliente" HorizontalAlignment="Left" Width="197"/>
+
+                            </ComboBox>
+                            <TextBox x:Name="tbPesqControle" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Width="115" TextChanged="tbPesqControle_TextChanged" />
                         </Grid>
 
-                        <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                        <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1" AutoGenerateColumns="False"
+                                  CanUserAddRows="False" IsReadOnly="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Width="24" Binding="{Binding Id}" />
                                 <DataGridTextColumn Header="FUNCIONÁRIO" Binding="{Binding NomeFuncionario}" />
@@ -120,37 +142,58 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="CLIENTES" Height="120" FontSize="24" Width="185">
+            <TabItem Header="CLIENTES" FontSize="18.667" Width="185" Style="{DynamicResource TabItem01}"
+                     Background="#FF2585B2" Foreground="Black" FontWeight="Bold">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
                     <!-- LINHA 1-->
-                    <Grid Grid.Row="0" VerticalAlignment="Top" Margin="5">
-                        <TextBlock Text="ID:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="0,3,0,0"></TextBlock>
-                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Width="111" Margin="19,0,0,0" Text="{Binding SelectedItem.Id, ElementName=dgClientes}" />
+                    <GroupBox Grid.Row="0" Header="Detalhes" FontSize="12" Margin="5">
 
-                        <TextBlock Text="CPD:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="144,3,0,3" />
-                        <TextBox VerticalAlignment="Top" FontSize="12" Margin="187,0,394,0" Text="{Binding SelectedItem.Cpd, ElementName=dgClientes}" />
+                        <Grid Margin="5">
+                            <TextBlock Text="ID:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"
+                                       Margin="0,3,0,0" />
+                            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Width="111"
+                                     Margin="22,0,0,0" Text="{Binding SelectedItem.Id, ElementName=dgClientes}"
+                                     IsReadOnly="True" Focusable="False" IsTabStop="False" />
 
-                        <TextBlock Text="NOME FANTASIA:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="0,32,0,-5" />
-                        <TextBox VerticalAlignment="Top" FontSize="12" Margin="100,29,10,-8" Text="{Binding SelectedItem.NomeFantasia, ElementName=dgClientes}" />
-                    </Grid>
+                            <TextBlock Text="CPD:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"
+                                       Margin="144,3,0,3" />
+                            <TextBox VerticalAlignment="Top" FontSize="12" Margin="180,0,470,0"
+                                     Text="{Binding SelectedItem.Cpd, ElementName=dgClientes}" IsReadOnly="True"
+                                     Focusable="False" IsTabStop="False" />
+
+                            <TextBlock Text="NOME FANTASIA:" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       FontSize="12" Margin="0,32,0,-5" />
+                            <TextBox VerticalAlignment="Top" FontSize="12" Margin="107,29,0,-7"
+                                     Text="{Binding SelectedItem.NomeFantasia, ElementName=dgClientes}"
+                                     IsReadOnly="True" Focusable="False" IsTabStop="False" />
+                        </Grid>
+                    </GroupBox>
                     <!-- LINHA 1-->
 
                     <!-- LINHA2-->
-                    <Grid Row="1" Margin="0,10,16,0" VerticalAlignment="Top">
-                        <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Margin="0,0,120,0"></TextBlock>
-                        <TextBox x:Name="tbCliPesq" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Width="115" TextChanged="tbCliPesq_TextChanged" />
+                    <Grid Row="1" Margin="0,0,16,0">
+                        <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Margin="0,8,324,8" />
+                        <ComboBox x:Name="cbTipFilterCliente" VerticalAlignment="Top" Margin="0,5,120,0" Width="199" FontSize="12" HorizontalAlignment="Right">
+                            <ComboBoxItem Content="Cpd" HorizontalAlignment="Left" Width="197" IsSelected="True"/>
+                            <ComboBoxItem Content="Nome" HorizontalAlignment="Left" Width="197"/>
+
+                        </ComboBox>
+
+                        <TextBox x:Name="tbCliPesq" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                 FontSize="12" Width="115" TextChanged="tbCliPesq_TextChanged" />
                     </Grid>
                     <!-- LINHA2-->
 
                     <!-- LINHA 3-->
-                    <DataGrid x:Name="dgClientes" Margin="5" Grid.Row="2" FontSize="12" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                    <DataGrid x:Name="dgClientes" Margin="5" Grid.Row="2" FontSize="12" AutoGenerateColumns="False"
+                              CanUserAddRows="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Width="70" Binding="{Binding Id}" />
                             <DataGridTextColumn Header="CPD" Width="70" Binding="{Binding Cpd}" />
@@ -168,20 +211,29 @@
                     <!-- LINHA 4-->
                     <Grid Grid.Row="3" VerticalAlignment="Bottom">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="btnCadDestino" Content="INCLUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80" Click="btnCadDestino_Click" IsEnabled="False"/>
-                        <Button x:Name="btnExcluirDestino" Content="EXLCUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30" Click="btnExcluirDestino_Click" IsEnabled="False"/>
-                        <Button x:Name="btnAlterarDestino" Content="ALTERAR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30" Click="btnAlterarDestino_Click" IsEnabled="False"/>
+                        <Button x:Name="btnCadDestino" Content="INCLUIR" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" FontSize="12" Grid.Column="0" Width="80" Height="30"
+                                Click="btnCadDestino_Click" Style="{DynamicResource ButtonStyle01}" IsEnabled="False" />
+                        <Button x:Name="btnExcluirDestino" Content="EXLCUIR" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30"
+                                Click="btnExcluirDestino_Click" Style="{DynamicResource ButtonStyle01}"
+                                IsEnabled="False" />
+                        <Button x:Name="btnAlterarDestino" Content="ALTERAR" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30"
+                                Click="btnAlterarDestino_Click" Style="{DynamicResource ButtonStyle01}"
+                                IsEnabled="False" />
                     </Grid>
                     <!-- LINHA 4-->
 
                 </Grid>
             </TabItem>
 
-            <TabItem Header="FUNCIONÁRIOS" Height="120" FontSize="24" Width="185">
+            <TabItem Header="FUNCIONÁRIOS" FontSize="18.667" Width="185" Style="{DynamicResource TabItem01}"
+                     Background="#FF2585B2" Foreground="Black" FontWeight="Bold">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -190,16 +242,27 @@
                     </Grid.RowDefinitions>
 
                     <!-- LINHA 1-->
-                    <Grid Grid.Row="0" VerticalAlignment="Top" Margin="5">
-                        <TextBlock Text="ID:" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Margin="0,0,120,0"></TextBlock>
-                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Width="111" Margin="19,0,0,0" IsReadOnly="True" Text="{Binding SelectedItem.Id, ElementName=dgFuncionarios}" />
-                        <TextBlock Text="NOME:" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Margin="144,3,0,3" />
-                        <TextBox VerticalAlignment="Center" FontSize="12" Margin="187,0,0,0" Text="{Binding SelectedItem.Nome, ElementName=dgFuncionarios}" IsReadOnly="True" />
-                    </Grid>
+                    <GroupBox Grid.Row="0" Header="Detalhes" FontSize="12" Margin="5">
+
+                        <Grid Margin="5">
+                            <TextBlock Text="ID:" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                                       Margin="0,0,120,0" />
+                            <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Width="111"
+                                     Margin="19,0,0,0" IsReadOnly="True"
+                                     Text="{Binding SelectedItem.Id, ElementName=dgFuncionarios}" Focusable="False"
+                                     IsTabStop="False" />
+                            <TextBlock Text="NOME:" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                                       Margin="144,3,0,3" />
+                            <TextBox VerticalAlignment="Center" FontSize="12" Margin="187,0,0,0"
+                                     Text="{Binding SelectedItem.Nome, ElementName=dgFuncionarios}" IsReadOnly="True"
+                                     Focusable="False" IsTabStop="False" />
+                        </Grid>
+                    </GroupBox>
                     <!-- LINHA 1-->
 
                     <!-- LINHA 2-->
-                    <DataGrid x:Name="dgFuncionarios" Margin="5" Grid.Row="1" FontSize="12" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                    <DataGrid x:Name="dgFuncionarios" Margin="5" Grid.Row="1" FontSize="12" AutoGenerateColumns="False"
+                              CanUserAddRows="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Width="24" Binding="{Binding Id}" />
                             <DataGridTextColumn Header="NOME" Width="*" Binding="{Binding Nome}" />
@@ -216,46 +279,61 @@
                     <!-- LINHA 3-->
                     <Grid Grid.Row="2" VerticalAlignment="Bottom">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="btnIncluirFunc" Content="INCLUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80" Click="bntIncluirFunc_Click" IsEnabled="False"></Button>
-                        <Button x:Name="btnExcluirFunc" Content="EXLCUIR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30" Click="btnExcluirFunc_Click" IsEnabled="False"></Button>
-                        <Button x:Name="btnAlterarFunc" Content="ALTERAR" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30" Click="btnAlterarFunc_Click" IsEnabled="False"></Button>
+                        <Button x:Name="btnIncluirFunc" Content="INCLUIR" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" FontSize="12" Grid.Column="0" Height="30" Width="80"
+                                Click="bntIncluirFunc_Click" IsEnabled="False" Style="{DynamicResource ButtonStyle01}" />
+                        <Button x:Name="btnExcluirFunc" Content="EXLCUIR" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" FontSize="12" Grid.Column="1" Width="80" Height="30"
+                                Click="btnExcluirFunc_Click" IsEnabled="False" Style="{DynamicResource ButtonStyle01}" />
+                        <Button x:Name="btnAlterarFunc" Content="ALTERAR" HorizontalAlignment="Center"
+                                VerticalAlignment="Center" FontSize="12" Grid.Column="2" Width="80" Height="30"
+                                Click="btnAlterarFunc_Click" IsEnabled="False" Style="{DynamicResource ButtonStyle01}" />
                     </Grid>
                     <!-- LINHA 3-->
 
                 </Grid>
             </TabItem>
 
-            <TabItem Header="GERA ETIQUETA" Height="120" FontSize="24" Width="185" >
+            <TabItem Header="GERA ETIQUETA" FontSize="18.667" Width="185" Style="{DynamicResource TabItem01}"
+                     Background="#FF2585B2" Foreground="Black" FontWeight="Bold">
 
                 <Grid>
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <GroupBox Header="Por código" FontSize="12" Grid.RowSpan="2" Margin="0">
+                        <GroupBox Header="Por código" FontSize="12" Grid.Row="0" Margin="0,0,0,5">
                             <Grid>
-                                <TextBlock Text="Código:" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12" Margin="10,10,0,0"></TextBlock>
-                                <TextBox x:Name="tbCodCod" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,7,0,0" Width="215" TextChanged="tbCodCod_TextChanged"/>
-                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0,34,0,40">
-                                    <Grid x:Name="impCod" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="40,0,0,0">
-                                        <Image x:Name="imgCodCod" Margin="0" Width="491" Height="144" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="Código:" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           FontSize="12" Margin="10,10,0,0" />
+                                <TextBox x:Name="tbCodCod" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                         Margin="56,7,0,0" Width="215" TextChanged="tbCodCod_TextChanged"
+                                         MaxLength="45" />
+                                <GroupBox Header="Pré-visualização:" FontSize="12" Margin="0,34,0,0">
+                                    <Grid x:Name="impCod" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                          Margin="40,0,0,0">
+                                        <Image x:Name="imgCodCod" Margin="0" Width="491" Height="144"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Grid>
                                 </GroupBox>
                             </Grid>
                         </GroupBox>
-                        <Button x:Name="btnCodImp" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Imprimir" Width="80" FontSize="12" Click="btnCodImp_Click"></Button>
+                        <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                            <Button x:Name="btnCodImp" Grid.Row="1" HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" Content="IMPRIMIR" Width="80" FontSize="12"
+                                    Click="btnCodImp_Click" Style="{DynamicResource ButtonStyle01}" Height="30" />
+                        </Grid>
+
                     </Grid>
 
 
-
                 </Grid>
-
 
 
             </TabItem>

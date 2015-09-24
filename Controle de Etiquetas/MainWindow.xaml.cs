@@ -4,12 +4,13 @@
 // Projeto:Controle de Etiquetas
 // Arquivo: MainWindow.xaml.cs
 // =========================================
-// Última alteração: 23/09/2015
+// Última alteração: 24/09/2015
 
 #region Usings
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -80,9 +81,6 @@ namespace Controle_de_Etiquetas {
             // Chama método que faz o carregamendo do cadastro de controle
             CarregaControle();
 
-            // Chama função que carrega os combos de funcionario e de destino
-            //CarregaCombos();
-
             // Instacia Thread passando a ThreadStart
             MinhaThread = new Thread(EscutarConexao);
 
@@ -91,11 +89,12 @@ namespace Controle_de_Etiquetas {
 
             // Inicia a Thread
             MinhaThread.Start();
+
         }
 
         #endregion Construtores
 
-        #region Botões
+        #region Eventos
 
         private void btnCadDestino_Click(object sender, RoutedEventArgs e) {
             // Chama método que para fazer inclusão de destinos
@@ -152,22 +151,137 @@ namespace Controle_de_Etiquetas {
         }
 
         private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e) {
+
+            // Define objeto Text Box
             var t = (TextBox) sender;
+
+            // Define campo de filtro
             var filter = t.Text;
+
+            // Define coleção
             var cv = CollectionViewSource.GetDefaultView(dgClientes.ItemsSource);
 
+            // Se o filtro (campos texto) estiver vazio
             if (filter == "") {
+
+                // Seta filtro como nulo
                 cv.Filter = null;
+
             }
+
+            // Se não estiver vazio
             else {
+
+                // Seta filtro
                 cv.Filter = o => {
+
+                    // Define objeto controle
                     var p = o as Cliente;
+
+                    // Verifica que tipo de filtro deve ser aplicado
+                    // Se for funcionário
+                    if (cbTipFilterCliente.Text == "Cpd") {
+
+                        // Retorna filtro no nome do funcionário
+                        return (p.Cpd.ToUpper().StartsWith(filter.ToUpper()));
+
+                    }
+
+                    // Se for cliente
+
+                    // Retorna filtro no nome do cliente
                     return (p.NomeFantasia.ToUpper().StartsWith(filter.ToUpper()));
+
                 };
             }
         }
 
-        #endregion Botões
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            KListener.KeyDown += KListener_KeyDown;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e) {
+            KListener.Dispose();
+        }
+
+        private void KListener_KeyDown(object sender, RawKeyEventArgs args) {
+
+            //Console.WriteLine(args.Key.ToString());
+
+            if (args.Key.ToString() == "Return") {
+
+                // Seja não estiver editando
+                if (editando == false) {
+
+                    tbLeitor.Focus();
+
+                    editando = true;
+
+                    //Console.WriteLine("Editando");
+                }
+
+                else {
+
+                    //Console.WriteLine("Devo inicializar");
+
+                    editando = false;
+                    IncluirLeitor(tbLeitor.Text);
+                    tbLeitor.Text = "";
+
+                }
+
+            }
+
+        }
+
+        private void tbPesqControle_TextChanged(object sender, TextChangedEventArgs e) {
+
+            // Define objeto Text Box
+            var t = (TextBox) sender;
+
+            // Define campo de filtro
+            var filter = t.Text;
+
+            // Define coleção
+            var cv = CollectionViewSource.GetDefaultView(dgControle.ItemsSource);
+
+            // Se o filtro (campos texto) estiver vazio
+            if (filter == "") {
+
+                // Seta filtro como nulo
+                cv.Filter = null;
+
+            }
+
+            // Se não estiver vazio
+            else {
+
+                // Seta filtro
+                cv.Filter = o => {
+
+                    // Define objeto controle
+                    var p = o as Controle;
+
+                    // Verifica que tipo de filtro deve ser aplicado
+                    // Se for funcionário
+                    if (cbTipFilterControle.Text == "Funcionário") {
+
+                        // Retorna filtro no nome do funcionário
+                        return (p.NomeFuncionario.ToUpper().StartsWith(filter.ToUpper()));
+
+                    }
+
+                    // Se for cliente
+
+                    // Retorna filtro no nome do cliente
+                    return (p.NomeCliente.ToUpper().StartsWith(filter.ToUpper()));
+
+                };
+            }
+
+        }
+
+        #endregion Eventos
 
         #region Variaveis
 
@@ -194,6 +308,10 @@ namespace Controle_de_Etiquetas {
         private const string CodFim = "FINALIZA";
 
         private const string CodRetorno = "RETORNO";
+
+        private bool editando;
+
+        private KeyboardListener KListener = new KeyboardListener();
 
         #endregion Variaveis
 
@@ -354,6 +472,253 @@ namespace Controle_de_Etiquetas {
                 MessageBox.Show(error);
 
             }
+        }
+
+        private void IncluirLeitor(string Mensagem) {
+
+            // Verifica se é a mensagem de iniciar o objeto
+            if (string.IsNullOrEmpty(EscutaControle.CodigoInicial)) {
+
+                if (Mensagem != CodIni) {
+
+                    // Apresenta mensagem de erro
+                    MessageBox.Show("Você deve primeiro escanear o código de inicialização");
+
+                }
+                else {
+
+                    // Devo marcar no objeto como iniciado
+                    EscutaControle.CodigoInicial = Mensagem;
+
+                    Dispatcher.Invoke(() => {
+
+                        // Apresenta mensagem de informação
+                        tbInformação.Text = "Iniciada saída:";
+
+                        // Limpa Grid
+                        dgControle.ItemsSource = null;
+
+                        // Define objeto EscutaControle como novo ItemsSource
+                        dgControle.ItemsSource = EscutaControle;
+
+                    });
+
+                }
+
+            }
+
+            // Se o objeto já foi inicializado
+            else {
+
+                // Verifico se o código do funcionário está vazrio
+                if (string.IsNullOrEmpty(EscutaControle.CodFuncionario)) {
+
+                    // Verifica se a mensagem retornada é um código númerico
+                    if (Regex.IsMatch(Mensagem, @"^\d+$")) {
+
+                        var dbResult = RetornaFuncionario(Mensagem);
+
+                        // Verifico se existe o funcionario com o código da mensagem
+                        if (string.IsNullOrEmpty(dbResult)) {
+
+                            // Apresento mensagem de que não reconheceu o funcionário
+                            MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+
+                        }
+
+                        // Se conseguiu encontrar o funcionário
+                        else {
+
+                            // Grava código do funcionário no objeto
+                            EscutaControle.CodFuncionario = Mensagem;
+
+                            Dispatcher.Invoke(() => {
+
+                                // Apresenta mensagem de informação
+                                tbInformação.Text = "Funcionário: " + dbResult;
+
+                            });
+                            ;
+
+                        }
+
+                    }
+
+                    // Se ela não for um código numérico
+                    else {
+
+                        // Apresento mensagem de que não reconheceu o funcionário
+                        MessageBox.Show("Funcionário não reconhecido.\nCódigo do funcionário nãoencontrado: " + Mensagem);
+
+                    }
+
+                }
+
+                // Se o objeto ja foi inicializado, e o funcionário preenchido
+                // Neste caso, a Mensagem é o codigo do cliente
+                else {
+
+                    switch (Mensagem) {
+
+                        case CodFim: {
+
+                            // Verificose existem registros a serem gravados no banco
+                            if (EscutaControle.Count > 0) {
+
+                                // Gero laço para percorrer a lista de registros
+
+                                foreach (var iControle in EscutaControle) {
+
+                                    // Crio objeto de acesso ao banco de dados
+                                    var objDB = new DatabaseHelper();
+
+                                    // Crio Dicionario que vai conter os campos  e valores
+                                    var dctDados = new Dictionary<string, string>();
+
+                                    // Adiciono dados no dicionario
+                                    dctDados.Add("c_nomefuncionario", iControle.NomeFuncionario);
+                                    dctDados.Add("i_funcionario_id", iControle.IdFuncionario);
+                                    dctDados.Add("c_nomecliente", iControle.NomeCliente);
+                                    dctDados.Add("i_cliente_id", iControle.IdCliente);
+                                    dctDados.Add("d_data_saida", iControle.DataSaida);
+                                    dctDados.Add("t_hora_saida", iControle.HoraSaida);
+                                    dctDados.Add("b_fechado", iControle.FlagFechado.ToString());
+
+                                    // Verifico se não consseguir incluir os dados no banco
+                                    if (!objDB.Insert("dados.entradas", dctDados)) {
+
+                                        // Apresenta mensagem de erro
+                                        MessageBox.Show("Ocorreu um erro ao tentar adicionar o registro");
+
+                                    }
+
+                                }
+
+                            }
+
+                            LimpaObjeto();
+
+                            break;
+                        }
+
+                        case CodRetorno: {
+
+                            // Gero novo objeto de acesso ao banco de dados
+                            var objDB = new DatabaseHelper();
+
+                            // Gero novo comando SQL
+                            var SQL = string.Format("SELECT id FROM dados.entradas WHERE i_funcionario_id = '{0}' AND b_fechado = false", EscutaControle.CodFuncionario);
+
+                            // Salvo resultado do SQL em um datatable
+                            var dtResult = objDB.GetDataTable(SQL);
+
+                            // Defino data de saída
+                            var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
+
+                            // Defino hora de saída
+                            var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+
+                            // Crio laço para rodar em cada resultado
+                            foreach (DataRow row in dtResult.Rows) {
+
+                                // Defino novo dicionario com campo/valor
+                                var dctDados = new Dictionary<string, string>();
+
+                                // Adiciono campos no dicionario
+                                dctDados.Add("d_data_chegada", dtDataRetorno);
+                                dctDados.Add("t_hora_chegada", dtHoraRetorno);
+                                dctDados.Add("b_fechado", "true");
+
+                                // Tenta atualizar os registros
+                                if (!objDB.Update("entradas", dctDados, "id = " + row["id"])) {
+
+                                    MessageBox.Show("Ocorreu um erro ao tentar fechar as saídas");
+
+                                }
+
+                            }
+
+                            // Executa rotina para limpar o objeto
+                            LimpaObjeto();
+
+                            // Devo limpar e recarregar o Grid de Controle
+                            Dispatcher.Invoke(() => {
+
+                                // Apresenta mensagem de informação
+                                tbInformação.Text = "Gravado retorno";
+
+                            });
+
+                            break;
+                        }
+
+                        default: {
+
+                            // Carrego nome do cliente
+                            var dbResult = RetornaCliente(Mensagem);
+
+                            // Verifico se o cliente existe
+                            if (string.IsNullOrEmpty(dbResult)) {
+
+                                // Apresento mensagem de que não existe o cliente
+                                MessageBox.Show("Não foi possível localizar o cliente com o código :" + Mensagem);
+
+                            }
+
+                            // Se conseguir encontrar o cliente
+                            else {
+
+                                // Crio novo objeto controle
+                                var ctrTemp = new Controle();
+
+                                // Defino ID
+                                ctrTemp.Id = "*";
+
+                                // Defino funcionario com o funcionário atual
+                                ctrTemp.IdFuncionario = EscutaControle.CodFuncionario;
+
+                                // Defino nome do funcionario
+                                ctrTemp.NomeFuncionario = RetornaFuncionario(EscutaControle.CodFuncionario);
+
+                                // Defino código do cliente
+                                ctrTemp.IdCliente = Mensagem;
+
+                                // Defino nome do cliente
+                                ctrTemp.NomeCliente = RetornaCliente(Mensagem);
+
+                                // Defino data de saída
+                                ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
+
+                                // Defino hora de saída
+                                ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+
+                                // Defino flag como aberto
+                                ctrTemp.FlagFechado = false;
+
+                                Dispatcher.Invoke(() => {
+
+                                    // Adiciono o objeto na lista de objetos
+                                    EscutaControle.Add(ctrTemp);
+
+                                });
+
+                            }
+
+                            break;
+
+                        }
+
+                    }
+
+                    // Verifico se devo fechar o registro
+                    if (Mensagem == CodFim) {
+
+                    }
+
+                }
+
+            }
+
         }
 
         private void EscutarConexao() {
