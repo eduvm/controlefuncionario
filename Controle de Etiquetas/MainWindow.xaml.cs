@@ -204,6 +204,53 @@ namespace Controle_de_Etiquetas {
 
         }
 
+        private void tbPesqControle_TextChanged(object sender, TextChangedEventArgs e) {
+
+            // Define objeto Text Box
+            var t = (TextBox) sender;
+
+            // Define campo de filtro
+            var filter = t.Text;
+
+            // Define coleção
+            var cv = CollectionViewSource.GetDefaultView(dgControle.ItemsSource);
+
+            // Se o filtro (campos texto) estiver vazio
+            if (filter == "") {
+
+                // Seta filtro como nulo
+                cv.Filter = null;
+
+            }
+
+            // Se não estiver vazio
+            else {
+
+                // Seta filtro
+                cv.Filter = o => {
+
+                    // Define objeto controle
+                    var p = o as Controle;
+
+                    // Verifica que tipo de filtro deve ser aplicado
+                    // Se for funcionário
+                    if (cbTipFilterControle.Text == "Funcionário") {
+
+                        // Retorna filtro no nome do funcionário
+                        return (p.NomeFuncionario.ToUpper().StartsWith(filter.ToUpper()));
+
+                    }
+
+                    // Se for cliente
+
+                    // Retorna filtro no nome do cliente
+                    return (p.NomeCliente.ToUpper().StartsWith(filter.ToUpper()));
+
+                };
+            }
+
+        }
+
         #endregion Eventos
 
         #region Variaveis

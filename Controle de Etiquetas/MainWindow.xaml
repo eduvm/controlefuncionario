@@ -113,9 +113,13 @@
                         </Grid.RowDefinitions>
 
                         <Grid Row="0" Margin="0,0,16,0">
-                            <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                       FontSize="12" Margin="0,0,120,0" />
-                            <TextBox HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Width="115" />
+                            <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Margin="0,8,324,8" />
+                            <ComboBox x:Name="cbTipFilterControle" VerticalAlignment="Top" Margin="0,5,120,0" Width="199" FontSize="12" HorizontalAlignment="Right">
+                                <ComboBoxItem Content="Funcionário" HorizontalAlignment="Left" Width="197" IsSelected="True"/>
+                                <ComboBoxItem Content="Cliente" HorizontalAlignment="Left" Width="197"/>
+
+                            </ComboBox>
+                            <TextBox x:Name="tbPesqControle" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Width="115" TextChanged="tbPesqControle_TextChanged" />
                         </Grid>
 
                         <DataGrid x:Name="dgControle" Margin="5" FontSize="12" Grid.Row="1" AutoGenerateColumns="False"
