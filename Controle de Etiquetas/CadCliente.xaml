@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Controle_de_Etiquetas"
         mc:Ignorable="d"
-        Title="Cadastro de Destino" Height="182.911" Width="557.255" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Cadastro de Destino" Height="187.911" Width="557.255" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,8 +44,8 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="btnSalvar" Grid.Column="0" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" Content="SALVAR" Click="btnSalvar_Click"></Button>
-            <Button x:Name="btnCancelar" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Content="CANCELAR" Click="btnCancelar_Click"/>
+            <Button x:Name="btnSalvar" Grid.Column="0" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Content="SALVAR" Click="btnSalvar_Click" Style="{DynamicResource ButtonStyle01}" Width="80"></Button>
+            <Button x:Name="btnCancelar" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Content="CANCELAR" Click="btnCancelar_Click" Width="80" Style="{DynamicResource ButtonStyle01}"/>
         </Grid>
 
 

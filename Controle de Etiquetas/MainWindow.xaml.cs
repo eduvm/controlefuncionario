@@ -4,7 +4,7 @@
 // Projeto:Controle de Etiquetas
 // Arquivo: MainWindow.xaml.cs
 // =========================================
-// Última alteração: 23/09/2015
+// Última alteração: 24/09/2015
 
 #region Usings
 
