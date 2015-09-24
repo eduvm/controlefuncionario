@@ -135,6 +135,14 @@ namespace Controle_de_Etiquetas {
                 GeraBarCode(tbCodCod.Text);
 
             }
+                // Se o campo estiver em branco
+            else {
+
+                // Limpa a imagem
+                imgCodCod.Source = null;
+
+
+            }
 
         }
 
