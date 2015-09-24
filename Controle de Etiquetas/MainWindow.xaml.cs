@@ -58,7 +58,7 @@ namespace Controle_de_Etiquetas {
             var args = Environment.GetCommandLineArgs();
 
             // Verificase deve habilitar os botões de inclusão
-            if (!string.IsNullOrEmpty(args[0]) && args[0] == "dev") {
+            if (!string.IsNullOrEmpty(args[1]) && args[1] == "dev") {
 
                 // Cadastro de clientes
                 btnCadDestino.IsEnabled = true;
