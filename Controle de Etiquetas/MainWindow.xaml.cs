@@ -153,8 +153,19 @@ namespace Controle_de_Etiquetas {
 
         private void btnCodImp_Click(object sender, RoutedEventArgs e) {
 
-            // Chama método que imprime a etiqueta
-            ImprimirEtq(impCod);
+            // Verifica se existe etiqueta para imprimir
+            if (String.IsNullOrEmpty(tbCodCod.Text)) {
+
+                // Informa erro
+                MessageBox.Show("Você deve informar o texto da etiqueta");
+
+            }
+            else {
+
+                // Chama método que imprime a etiqueta
+                ImprimirEtq(impCod);
+
+            }
 
         }
 
