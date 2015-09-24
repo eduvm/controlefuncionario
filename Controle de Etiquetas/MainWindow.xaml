@@ -179,8 +179,13 @@
 
                     <!-- LINHA2-->
                     <Grid Row="1" Margin="0,0,16,0">
-                        <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   FontSize="12" Margin="0,0,120,0" />
+                        <TextBlock Text="Pesquisar:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Margin="0,8,324,8" />
+                        <ComboBox x:Name="cbTipFilterCliente" VerticalAlignment="Top" Margin="0,5,120,0" Width="199" FontSize="12" HorizontalAlignment="Right">
+                            <ComboBoxItem Content="Cpd" HorizontalAlignment="Left" Width="197" IsSelected="True"/>
+                            <ComboBoxItem Content="Nome" HorizontalAlignment="Left" Width="197"/>
+
+                        </ComboBox>
+
                         <TextBox x:Name="tbCliPesq" HorizontalAlignment="Right" VerticalAlignment="Center"
                                  FontSize="12" Width="115" TextChanged="tbCliPesq_TextChanged" />
                     </Grid>

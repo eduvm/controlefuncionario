@@ -151,17 +151,47 @@ namespace Controle_de_Etiquetas {
         }
 
         private void tbCliPesq_TextChanged(object sender, TextChangedEventArgs e) {
+
+            // Define objeto Text Box
             var t = (TextBox) sender;
+
+            // Define campo de filtro
             var filter = t.Text;
+
+            // Define coleção
             var cv = CollectionViewSource.GetDefaultView(dgClientes.ItemsSource);
 
+            // Se o filtro (campos texto) estiver vazio
             if (filter == "") {
+
+                // Seta filtro como nulo
                 cv.Filter = null;
+
             }
+
+            // Se não estiver vazio
             else {
+
+                // Seta filtro
                 cv.Filter = o => {
+
+                    // Define objeto controle
                     var p = o as Cliente;
+
+                    // Verifica que tipo de filtro deve ser aplicado
+                    // Se for funcionário
+                    if (cbTipFilterCliente.Text == "Cpd") {
+
+                        // Retorna filtro no nome do funcionário
+                        return (p.Cpd.ToUpper().StartsWith(filter.ToUpper()));
+
+                    }
+
+                    // Se for cliente
+
+                    // Retorna filtro no nome do cliente
                     return (p.NomeFantasia.ToUpper().StartsWith(filter.ToUpper()));
+
                 };
             }
         }
