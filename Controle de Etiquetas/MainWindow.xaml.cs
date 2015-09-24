@@ -58,7 +58,7 @@ namespace Controle_de_Etiquetas {
             var args = Environment.GetCommandLineArgs();
 
             // Verificase deve habilitar os botões de inclusão
-            if (!string.IsNullOrEmpty(args[0]) && args[0] == "dev") {
+            if (!string.IsNullOrEmpty(args[1]) && args[1] == "dev") {
 
                 // Cadastro de clientes
                 btnCadDestino.IsEnabled = true;
@@ -136,6 +136,14 @@ namespace Controle_de_Etiquetas {
 
             }
 
+            // Se o campo estiver em branco
+            else {
+
+                // Limpa a imagem
+                imgCodCod.Source = null;
+
+            }
+
         }
 
         private void Window_Closed(object sender, EventArgs e) {
@@ -145,8 +153,19 @@ namespace Controle_de_Etiquetas {
 
         private void btnCodImp_Click(object sender, RoutedEventArgs e) {
 
-            // Chama método que imprime a etiqueta
-            ImprimirEtq(impCod);
+            // Verifica se existe etiqueta para imprimir
+            if (string.IsNullOrEmpty(tbCodCod.Text)) {
+
+                // Informa erro
+                MessageBox.Show("Você deve informar o texto da etiqueta");
+
+            }
+            else {
+
+                // Chama método que imprime a etiqueta
+                ImprimirEtq(impCod);
+
+            }
 
         }
 
@@ -616,7 +635,7 @@ namespace Controle_de_Etiquetas {
                             var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
 
                             // Defino hora de saída
-                            var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+                            var dtHoraRetorno = DateTime.Now.ToString("HH:mm:ss");
 
                             // Crio laço para rodar em cada resultado
                             foreach (DataRow row in dtResult.Rows) {
@@ -690,7 +709,7 @@ namespace Controle_de_Etiquetas {
                                 ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
 
                                 // Defino hora de saída
-                                ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+                                ctrTemp.HoraSaida = DateTime.Now.ToString("HH:mm:ss");
 
                                 // Defino flag como aberto
                                 ctrTemp.FlagFechado = false;
@@ -909,7 +928,7 @@ namespace Controle_de_Etiquetas {
                                         var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
 
                                         // Defino hora de saída
-                                        var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+                                        var dtHoraRetorno = DateTime.Now.ToString("HH:mm:ss");
 
                                         // Crio laço para rodar em cada resultado
                                         foreach (DataRow row in dtResult.Rows) {
@@ -983,7 +1002,7 @@ namespace Controle_de_Etiquetas {
                                             ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
 
                                             // Defino hora de saída
-                                            ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+                                            ctrTemp.HoraSaida = DateTime.Now.ToString("HH:mm:ss");
 
                                             // Defino flag como aberto
                                             ctrTemp.FlagFechado = false;
@@ -1106,11 +1125,8 @@ namespace Controle_de_Etiquetas {
             // Se existir registro selecionado
             else {
 
-                // Gero objeto cliente com os dados do cliente selecionado
-                var objCLiente = (Cliente) dgClientes.SelectedItem;
-
-                // Defino valor da coluna id
-                var strId = objCLiente.Id;
+                // Defino Id do cliente selecionado
+                var strId = RetIdCLiente();
 
                 // Cria objeto de acesso ao banco de dados
                 var objDB = new DatabaseHelper();
@@ -1147,11 +1163,8 @@ namespace Controle_de_Etiquetas {
             // Se existe registro selecionado
             else {
 
-                // Defino novo objeto Funcionario com o registro selecionado
-                var selecionado = (Cliente) dgClientes.SelectedItem;
-
-                // Gravo na variável o Id do usuário selecionado
-                var strId = selecionado.Id;
+                // Defino Id do cliente selecionado
+                var strId = RetIdCLiente();
 
                 // Cria nova instância da janela de Cadastro de Destinos
                 var CadWin = new CadCliente("alterar", strId);
@@ -1162,6 +1175,16 @@ namespace Controle_de_Etiquetas {
                 // Chama método de carregar os destinos
                 CarregaClientes();
             }
+        }
+
+        private string RetIdCLiente() {
+
+            // Gero objeto cliente com os dados do cliente selecionado
+            var objCLiente = (Cliente) dgClientes.SelectedItem;
+
+            // Retorno id do cliente selecionado
+            return objCLiente.Id;
+
         }
 
         private void IncluirFuncionario() {
@@ -1184,11 +1207,8 @@ namespace Controle_de_Etiquetas {
 
             // Se existir registro selecionado
             else {
-                // Pega id do registro selecionado
-                var rowview = dgFuncionarios.SelectedItem as DataRowView;
 
-                // Defino valor da coluna id
-                var strId = rowview.Row["id"].ToString();
+                var strId = RetFuncID();
 
                 // Cria objeto de acesso ao banco de dados
                 var objDB = new DatabaseHelper();
@@ -1224,11 +1244,9 @@ namespace Controle_de_Etiquetas {
 
             // Se existe registro selecionado
             else {
-                // Pega id do registro selecionado
-                var rowview = dgFuncionarios.SelectedItem as DataRowView;
 
-                // Defino valor da coluna id
-                var strId = rowview.Row["id"].ToString();
+                // Defino id do funcionário selecionado
+                var strId = RetFuncID();
 
                 // Cria nova instância da janela de Cadastro de Destinos
                 var CadWin = new CadFuncionario("alterar", strId);
@@ -1239,6 +1257,16 @@ namespace Controle_de_Etiquetas {
                 // Chama método de carregar os destinos
                 CarregaFuncionarios();
             }
+        }
+
+        protected string RetFuncID() {
+
+            // Defino novo objeto Funcionario com o registro selecionado
+            var selecionado = (Funcionario) dgFuncionarios.SelectedItem;
+
+            // Retorno o id do funcionario
+            return selecionado.Id;
+
         }
 
         private void GeraBarCode(string texto) {
