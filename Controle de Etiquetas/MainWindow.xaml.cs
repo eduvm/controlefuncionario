@@ -229,23 +229,28 @@ namespace Controle_de_Etiquetas {
 
             if (args.Key.ToString() == "Return") {
 
-                // Seja não estiver editando
-                if (editando == false) {
+                // Verifica se a janela está focalizada
+                if (IsActive) {
 
-                    tbLeitor.Focus();
+                    // Seja não estiver editando
+                    if (editando == false) {
 
-                    editando = true;
+                        tbLeitor.Focus();
 
-                    //Console.WriteLine("Editando");
-                }
+                        editando = true;
 
-                else {
+                        //Console.WriteLine("Editando");
+                    }
 
-                    //Console.WriteLine("Devo inicializar");
+                    else {
 
-                    editando = false;
-                    IncluirLeitor(tbLeitor.Text);
-                    tbLeitor.Text = "";
+                        //Console.WriteLine("Devo inicializar");
+
+                        editando = false;
+                        IncluirLeitor(tbLeitor.Text);
+                        tbLeitor.Text = "";
+
+                    }
 
                 }
 
