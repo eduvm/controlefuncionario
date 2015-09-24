@@ -635,7 +635,7 @@ namespace Controle_de_Etiquetas {
                             var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
 
                             // Defino hora de saída
-                            var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+                            var dtHoraRetorno = DateTime.Now.ToString("HH:mm:ss");
 
                             // Crio laço para rodar em cada resultado
                             foreach (DataRow row in dtResult.Rows) {
@@ -709,7 +709,7 @@ namespace Controle_de_Etiquetas {
                                 ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
 
                                 // Defino hora de saída
-                                ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+                                ctrTemp.HoraSaida = DateTime.Now.ToString("HH:mm:ss");
 
                                 // Defino flag como aberto
                                 ctrTemp.FlagFechado = false;
@@ -928,7 +928,7 @@ namespace Controle_de_Etiquetas {
                                         var dtDataRetorno = DateTime.Now.ToString("dd/MM/yyyy");
 
                                         // Defino hora de saída
-                                        var dtHoraRetorno = DateTime.Now.ToString("hh:mm:ss");
+                                        var dtHoraRetorno = DateTime.Now.ToString("HH:mm:ss");
 
                                         // Crio laço para rodar em cada resultado
                                         foreach (DataRow row in dtResult.Rows) {
@@ -1002,7 +1002,7 @@ namespace Controle_de_Etiquetas {
                                             ctrTemp.DataSaida = DateTime.Now.ToString("dd/MM/yyyy");
 
                                             // Defino hora de saída
-                                            ctrTemp.HoraSaida = DateTime.Now.ToString("hh:mm:ss");
+                                            ctrTemp.HoraSaida = DateTime.Now.ToString("HH:mm:ss");
 
                                             // Defino flag como aberto
                                             ctrTemp.FlagFechado = false;
