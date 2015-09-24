@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -23,7 +24,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -47,8 +47,6 @@ namespace Controle_de_Etiquetas {
         public MainWindow() {
             // Inicializa os componentes da janela
             InitializeComponent();
-
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
 
             // Cria nova instancia da janela de atualização de cliente
             var WinImport = new ImportarClientes();
@@ -83,9 +81,6 @@ namespace Controle_de_Etiquetas {
             // Chama método que faz o carregamendo do cadastro de controle
             CarregaControle();
 
-            // Chama função que carrega os combos de funcionario e de destino
-            //CarregaCombos();
-
             // Instacia Thread passando a ThreadStart
             MinhaThread = new Thread(EscutarConexao);
 
@@ -95,38 +90,11 @@ namespace Controle_de_Etiquetas {
             // Inicia a Thread
             MinhaThread.Start();
 
-            
         }
-
-        void CompositionTarget_Rendering(object sender, EventArgs e) {
-
-            if ((Keyboard.GetKeyStates(Key.Enter) & KeyStates.Down) > 0) {
-
-                if (editando == false) {
-
-                    //editando = (editando) ? false : true;
-                    Leitor.Focus();
-
-                    editando = true;
-
-                }
-                else {
-
-                    IncluirLeitor(Leitor.Text);
-
-                    editando = false;
-
-                    Leitor.Text = "";
-
-                }
-
-            }
-
-        } 
 
         #endregion Construtores
 
-        #region Botões
+        #region Eventos
 
         private void btnCadDestino_Click(object sender, RoutedEventArgs e) {
             // Chama método que para fazer inclusão de destinos
@@ -198,7 +166,45 @@ namespace Controle_de_Etiquetas {
             }
         }
 
-        #endregion Botões
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            KListener.KeyDown += KListener_KeyDown;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e) {
+            KListener.Dispose();
+        }
+
+        private void KListener_KeyDown(object sender, RawKeyEventArgs args) {
+
+            //Console.WriteLine(args.Key.ToString());
+
+            if (args.Key.ToString() == "Return") {
+
+                // Seja não estiver editando
+                if (editando == false) {
+
+                    tbLeitor.Focus();
+
+                    editando = true;
+
+                    //Console.WriteLine("Editando");
+                }
+
+                else {
+
+                    //Console.WriteLine("Devo inicializar");
+
+                    editando = false;
+                    IncluirLeitor(tbLeitor.Text);
+                    tbLeitor.Text = "";
+
+                }
+
+            }
+
+        }
+
+        #endregion Eventos
 
         #region Variaveis
 
@@ -226,7 +232,9 @@ namespace Controle_de_Etiquetas {
 
         private const string CodRetorno = "RETORNO";
 
-        private bool editando = false;
+        private bool editando;
+
+        private KeyboardListener KListener = new KeyboardListener();
 
         #endregion Variaveis
 
