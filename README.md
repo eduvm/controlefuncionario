@@ -21,7 +21,7 @@ Ex.: Código de saída do funcionário
 Recebe o código do funcionário
 
 Recebe o código do cliente/local ao qual irá visitar.
-- Podem ser encadeados vários locais aos quais o funcionário irá escaneando vários códigos em sequência
+Obs.: Podem ser encadeados vários locais aos quais o funcionário irá escaneando vários códigos em sequência
 
 Recebe o código de controle para finalizar a operação
 
