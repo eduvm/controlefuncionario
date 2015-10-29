@@ -22,3 +22,8 @@ Programa para controle de saída de funcionário.
 * Obs.: Podem ser encadeados vários locais aos quais o funcionário irá escaneando vários códigos em sequência
 * Recebe o código de controle para finalizar a operação
 * O sistema então irá gravar dos dados em uma banco de dados e atualizará o grid com estas informações
+
+### TODO ###
+* Seção de relatórios
+* Melhorar aparência do programa
+* Melhor controle do recebimento de códigos através do leitor de código de barras
